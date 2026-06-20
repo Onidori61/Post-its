@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nosso Espaço</title>
+    <style>
+        /* =========================================
+           1. VARIÁVEIS E CORES (DARK MODE)
+           ========================================= */
+        :root {
+            --bg-color: #0f0f11;
+            --card-bg: #1c1c1f;
+            --text-main: #f0f0f0;
+            --text-muted: #888;
+            
+            /* Temas */
+            --magenta: #ff00ff;
+            --rosa: #ff1493;
+            --roxo: #8a2be2;
+            --chumbo: #4f4f51;
+
+            --theme-current: var(--magenta); /* Padrão */
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        /* =========================================
+           2. MURAL E POST-ITS (LAYOUT)
+           ========================================= */
+        .mural {
+            column-count: 1;
+            column-gap: 15px;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding-bottom: 80px;
+        }
+        
+        @media (min-width: 768px) {
+            .mural { column-count: 3; }
+        }
+
+        .post-it {
+            background-color: var(--card-bg);
+            border-left: 4px solid var(--theme-current);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 4px 4px 0px rgba(0,0,0,0.6);
+            break-inside: avoid;
+            cursor: pointer;
+            overflow: hidden;
+            max-height: 65px; /* Comprimido */
+            transition: max-height 0.4s ease, background-color 0.2s;
+        }
+
+        .post-it.expandido { max-height: 600px; } /* Expandido */
+        
+        .post-it-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: bold;
+            font-size: 16px;
+            pointer-events: none;
+        }
+
+        .post-it-header span { color: var(--theme-current); }
+        .post-it-content { margin-top: 20px; color: var(--text-muted); font-size: 14px; pointer-events: none; }
+        .post-it-content p { margin-bottom: 8px; }
+        .post-it-content strong { color: var(--text-main); }
+
+        /* =========================================
+           3. BOTÃO FLUTUANTE (+)
+           ========================================= */
+        .fab {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background-color: var(--card-bg);
+            border: 2px solid var(--text-main);
+            color: var(--text-main);
+            font-size: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 4px 4px 0px rgba(0,0,0,0.8);
+            z-index: 10;
+        }
+
+        /* =========================================
+           4. MODAL GLASSMORPHISM
+           ========================================= */
+        .modal-backdrop {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 20;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+        .modal-backdrop.active { opacity: 1; pointer-events: auto; }
+
+        .glass-panel {
+            background: rgba(28, 28, 31, 0.85);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            width: 90%;
+            max-width: 400px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            transform: scale(0.9);
+            transition: transform 0.3s;
+        }
+        .modal-backdrop.active .glass-panel { transform: scale(1); }
+
+        /* Controles do Formulário */
+        .form-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; }
+        
+        .user-btns { display: flex; gap: 10px; }
+        .btn-user {
+            width: 40px; height: 40px;
+            border-radius: 12px;
+            background: transparent;
+            border: 2px solid var(--text-muted);
+            color: var(--text-muted);
+            font-weight: bold; font-size: 16px;
+            cursor: pointer;
+        }
+        .btn-user.active {
+            border-color: var(--theme-current);
+            color: var(--theme-current);
+            background: rgba(255,255,255,0.05);
+        }
+
+        .time-display { font-size: 14px; color: var(--text-muted); text-align: right; }
+        
+        .theme-selector { display: flex; gap: 8px; margin-top: 10px; }
+        .theme-dot { width: 16px; height: 16px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; }
+        .theme-dot.active { border-color: #fff; }
+
+        .section-title { font-size: 12px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 10px; margin-top: 20px;}
+
+        /* Grade de Ícones */
+        .icon-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+        .icon-btn {
+            background: rgba(255,255,255,0.05); border: none; border-radius: 12px;
+            font-size: 24px; padding: 10px 0; cursor: pointer; color: var(--text-main);
+            transition: 0.2s;
+        }
+        .icon-btn.active { background: var(--theme-current); color: #fff; box-shadow: 0 0 15px var(--theme-current); }
+
+        /* Inputs Ocultos (Jogo/Outro) */
+        .hidden-input {
+            width: 100%; background: rgba(0,0,0,0.3); border: none; border-bottom: 2px solid var(--theme-current);
+            color: #fff; padding: 10px; margin-top: 10px; border-radius: 4px 4px 0 0; outline: none;
+            display: none;
+        }
+        .hidden-input.show { display: block; }
+
+        /* Localização (Gangorra) */
+        .location-switch { display: flex; background: rgba(0,0,0,0.3); border-radius: 8px; overflow: hidden; }
+        .loc-btn { flex: 1; padding: 10px; text-align: center; cursor: pointer; font-size: 14px; border: none; background: transparent; color: var(--text-muted); }
+        .loc-btn.active { background: var(--theme-current); color: #fff; font-weight: bold; }
+
+        .location-details { display: none; margin-top: 10px; flex-direction: column; gap: 8px; }
+        .location-details.show { display: flex; }
+        .location-details input { background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 8px; border-radius: 6px; outline: none; }
+
+        /* Anotações e Botão Salvar */
+        textarea { width: 100%; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 10px; border-radius: 8px; outline: none; resize: none; margin-top: 20px; height: 60px; }
+        .btn-save { width: 100%; padding: 15px; border: none; border-radius: 8px; background: var(--theme-current); color: #fff; font-weight: bold; font-size: 16px; margin-top: 20px; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.4); }
+
+        /* =========================================
+           5. ÁREA SECRETA
+           ========================================= */
+        #secret-area {
+            display: none; padding: 30px; background: #000; min-height: 100vh; position: fixed; top: 0; left: 0; width: 100%; z-index: 50;
+        }
+        .btn-secret { padding: 15px; width: 100%; margin-bottom: 15px; font-weight: bold; border-radius: 8px; cursor: pointer; border: none;}
+        .btn-export { background: #fff; color: #000; }
+        .btn-clear { background: #ff3333; color: #fff; }
+        .btn-back { background: #333; color: #fff; }
+    </style>
+</head>
+<body>
+
+    <!-- MURAL PRINCIPAL -->
+    <div class="mural" id="mural"></div>
+
+    <!-- BOTÃO FLUTUANTE -->
+    <div class="fab" id="fab-add">+</div>
+
+    <!-- MODAL DE PREENCHIMENTO (GLASS) -->
+    <div class="modal-backdrop" id="modal-backdrop">
+        <div class="glass-panel" id="post-it-form">
+            
+            <div class="form-top">
+                <div>
+                    <div class="user-btns">
+                        <button class="btn-user" data-user="K">K</button>
+                        <button class="btn-user" data-user="L">L</button>
+                    </div>
+                    <div class="theme-selector">
+                        <div class="theme-dot active" style="background: var(--magenta);" data-color="#ff00ff" data-name="magenta"></div>
+                        <div class="theme-dot" style="background: var(--rosa);" data-color="#ff1493" data-name="rosa"></div>
+                        <div class="theme-dot" style="background: var(--roxo);" data-color="#8a2be2" data-name="roxo"></div>
+                        <div class="theme-dot" style="background: var(--chumbo);" data-color="#888888" data-name="chumbo"></div>
+                    </div>
+                </div>
+                <div class="time-display">
+                    <div id="current-date">--/--/----</div>
+                    <div id="current-time">--:--</div>
+                </div>
+            </div>
+
+            <div class="section-title">O que vou fazer?</div>
+            <div class="icon-grid" id="activity-grid">
+                <button class="icon-btn" data-act="Nenhum">🚫</button>
+                <button class="icon-btn" data-act="TikTok">📱</button>
+                <button class="icon-btn" data-act="Insta">📸</button>
+                <button class="icon-btn" data-act="Pinterest">📌</button>
+                <button class="icon-btn" data-act="YouTube">▶️</button>
+                <button class="icon-btn" data-act="Roblox">🧱</button>
+                <button class="icon-btn" data-act="Jogo" id="btn-jogo">🎮</button>
+                <button class="icon-btn" data-act="Outro" id="btn-outro">➕</button>
+            </div>
+            <input type="text" id="extra-input" class="hidden-input" placeholder="Qual?">
+
+            <div class="section-title">Onde estou?</div>
+            <div class="location-switch">
+                <button class="loc-btn active" data-loc="casa">🏠 Em Casa</button>
+                <button class="loc-btn" data-loc="rua">🚶‍♂️ Vou Sair</button>
+            </div>
+            <div class="location-details" id="loc-details">
+                <input type="text" id="out-dest" placeholder="Destino">
+                <input type="text" id="out-motivo" placeholder="Motivo">
+                <input type="time" id="out-volta" placeholder="Volto às">
+            </div>
+
+            <textarea id="notes-input" placeholder="Quer anotar mais alguma coisa? (Opcional)"></textarea>
+
+            <button class="btn-save" id="btn-save">Salvar</button>
+        </div>
+    </div>
+
+    <!-- ÁREA SECRETA -->
+    <div id="secret-area">
+        <h2 style="margin-bottom: 20px;">📦 Cofre de Registros</h2>
+        <button class="btn-secret btn-export" id="btn-export">Exportar Histórico (.txt)</button>
+        <button class="btn-secret btn-clear" id="btn-clear">Limpar Mural</button>
+        <button class="btn-secret btn-back" id="btn-back-secret">Voltar</button>
+    </div>
+
+    <!-- FIREBASE E LÓGICA DO APP -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+        import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, getDocs, deleteDoc, doc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+
+        // Configuração Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyCGee-Amtjd4mJN2vwHnrStJyd3-f-3zkw",
+            authDomain: "love-dce65.firebaseapp.com",
+            projectId: "love-dce65",
+            storageBucket: "love-dce65.firebasestorage.app",
+            messagingSenderId: "582479938503",
+            appId: "1:582479938503:web:e0e104448e511b17620fe2"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const registrosRef = collection(db, "registros_tempo");
+
+        // Elementos da Interface
+        const root = document.documentElement;
+        const mural = document.getElementById('mural');
+        const modal = document.getElementById('modal-backdrop');
+        const glassPanel = document.getElementById('post-it-form');
+        const extraInput = document.getElementById('extra-input');
+        const locDetails = document.getElementById('loc-details');
+        
+        // Estado do Formulário
+        let state = {
+            user: null,
+            themeColor: '#ff00ff',
+            themeName: 'magenta',
+            activity: null,
+            location: 'casa'
+        };
+
+        // 1. Controle de Relógio
+        function updateTime() {
+            const now = new Date();
+            document.getElementById('current-date').innerText = now.toLocaleDateString('pt-BR');
+            document.getElementById('current-time').innerText = now.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+        }
+        setInterval(updateTime, 1000); updateTime();
+
+        // 2. Abrir/Fechar Modal
+        document.getElementById('fab-add').onclick = () => {
+            modal.classList.add('active');
+        };
+        modal.onclick = (e) => {
+            if (e.target === modal) modal.classList.remove('active');
+        };
+
+        // 3. Seleção de Usuário (K / L)
+        document.querySelectorAll('.btn-user').forEach(btn => {
+            btn.onclick = () => {
+                document.querySelectorAll('.btn-user').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                state.user = btn.dataset.user;
+            };
+        });
+
+        // 4. Seleção de Tema (Bolinhas)
+        document.querySelectorAll('.theme-dot').forEach(dot => {
+            dot.onclick = () => {
+                document.querySelectorAll('.theme-dot').forEach(d => d.classList.remove('active'));
+                dot.classList.add('active');
+                state.themeColor = dot.dataset.color;
+                state.themeName = dot.dataset.name;
+                root.style.setProperty('--theme-current', state.themeColor);
+            };
+        });
+
+        // 5. Seleção de Atividade
+        document.querySelectorAll('.icon-btn').forEach(btn => {
+            btn.onclick = () => {
+                document.querySelectorAll('.icon-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                state.activity = btn.dataset.act;
+                
+                if (state.activity === 'Jogo' || state.activity === 'Outro') {
+                    extraInput.classList.add('show');
+                    extraInput.placeholder = state.activity === 'Jogo' ? "Qual jogo?" : "O que vai fazer?";
+                    setTimeout(() => extraInput.focus(), 100);
+                } else {
+                    extraInput.classList.remove('show');
+                    extraInput.value = '';
+                }
+            };
+        });
+
+        // 6. Seleção de Local
+        document.querySelectorAll('.loc-btn').forEach(btn => {
+            btn.onclick = () => {
+                document.querySelectorAll('.loc-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                state.location = btn.dataset.loc;
+                
+                if (state.location === 'rua') {
+                    locDetails.classList.add('show');
+                } else {
+                    locDetails.classList.remove('show');
+                }
+            };
+        });
+
+        // 7. Salvar Dados
+        document.getElementById('btn-save').onclick = async () => {
+            if (!state.user) { alert("Selecione quem é você (K ou L)!"); return; }
+            if (!state.activity) { alert("Selecione uma atividade!"); return; }
+
+            const now = new Date();
+            let actFinal = state.activity;
+            if ((state.activity === 'Jogo' || state.activity === 'Outro') && extraInput.value) {
+                actFinal += `: ${extraInput.value}`;
+            }
+
+            const registro = {
+                user: state.user,
+                themeName: state.themeName,
+                themeColor: state.themeColor,
+                activity: actFinal,
+                activityIcon: document.querySelector('.icon-btn.active').innerText,
+                locationType: state.location,
+                locDestino: document.getElementById('out-dest').value,
+                locMotivo: document.getElementById('out-motivo').value,
+                locVolta: document.getElementById('out-volta').value,
+                notes: document.getElementById('notes-input').value,
+                timeStr: now.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
+                dateStr: now.toLocaleDateString('pt-BR'),
+                timestamp: serverTimestamp()
+            };
+
+            try {
+                btn-save.innerText = "Salvando...";
+                await addDoc(registrosRef, registro);
+                
+                // Reseta formulário
+                modal.classList.remove('active');
+                btn-save.innerText = "Salvar";
+                extraInput.value = '';
+                document.getElementById('notes-input').value = '';
+            } catch (e) {
+                console.error("Erro:", e);
+                alert("Erro ao salvar.");
+            }
+        };
+
+        // 8. Renderizar Mural (Tempo Real)
+        const q = query(registrosRef, orderBy("timestamp", "desc"));
+        onSnapshot(q, (snapshot) => {
+            mural.innerHTML = '';
+            snapshot.forEach((docSnap) => {
+                const data = docSnap.data();
+                
+                // Formatação do Card
+                const div = document.createElement('div');
+                div.className = 'post-it';
+                div.style.setProperty('--theme-current', data.themeColor);
+                
+                let localIcon = data.locationType === 'casa' ? '🏠' : '🚶‍♂️';
+                
+                let htmlExpanded = `
+                    <p><strong>Horário:</strong> ${data.timeStr}</p>
+                `;
+                
+                if (data.locationType === 'rua') {
+                    htmlExpanded += `<p><strong>Destino:</strong> ${data.locDestino} | <strong>Motivo:</strong> ${data.locMotivo}</p>`;
+                    if(data.locVolta) htmlExpanded += `<p><strong>Volta prevista:</strong> ${data.locVolta}</p>`;
+                }
+                
+                if (data.notes) {
+                    htmlExpanded += `<p style="margin-top:10px;"><strong>Notas:</strong><br>${data.notes.replace(/\n/g, '<br>')}</p>`;
+                }
+
+                div.innerHTML = `
+                    <div class="post-it-header">
+                        <span>${data.user}</span> | ${localIcon} | ${data.activityIcon} ${data.activity.includes(':') ? data.activity.split(':')[1] : ''}
+                    </div>
+                    <div class="post-it-content">
+                        ${htmlExpanded}
+                    </div>
+                `;
+
+                // Efeito Sanfona
+                div.onclick = () => {
+                    const expandido = div.classList.contains('expandido');
+                    document.querySelectorAll('.post-it').forEach(p => p.classList.remove('expandido'));
+                    if (!expandido) div.classList.add('expandido');
+                };
+
+                mural.appendChild(div);
+            });
+        });
+
+        // =========================================
+        // 9. ÁREA SECRETA (Link Oculto)
+        // =========================================
+        const secretArea = document.getElementById('secret-area');
+        
+        function checkSecretRoute() {
+            if (window.location.hash === '#bau') {
+                secretArea.style.display = 'block';
+            } else {
+                secretArea.style.display = 'none';
+            }
+        }
+        
+        window.addEventListener('hashchange', checkSecretRoute);
+        checkSecretRoute();
+
+        document.getElementById('btn-back-secret').onclick = () => {
+            window.location.hash = '';
+        };
+
+        document.getElementById('btn-export').onclick = async () => {
+            const snap = await getDocs(q);
+            let texto = "====================================\n";
+            texto += "HISTÓRICO DO NOSSO ESPAÇO\n";
+            texto += "====================================\n\n";
+
+            snap.forEach(d => {
+                const doc = d.data();
+                texto += `[${doc.user}] - ${doc.dateStr} às ${doc.timeStr}\n`;
+                texto += `Status: ${doc.locationType === 'casa' ? 'Em Casa' : 'Saiu'}\n`;
+                texto += `Atividade: ${doc.activity}\n`;
+                if(doc.notes) texto += `Notas: ${doc.notes}\n`;
+                texto += `------------------------------------\n`;
+            });
+
+            const blob = new Blob([texto], { type: "text/plain" });
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = `historico_tempo_${new Date().getTime()}.txt`;
+            link.click();
+        };
+
+        document.getElementById('btn-clear').onclick = async () => {
+            if(confirm("Tem certeza? Verifique se já exportou o histórico antes de apagar tudo!")) {
+                const snap = await getDocs(registrosRef);
+                snap.forEach(async (d) => {
+                    await deleteDoc(doc(db, "registros_tempo", d.id));
+                });
+                alert("Mural limpo!");
+            }
+        };
+
+    </script>
+</body>
+</html>
