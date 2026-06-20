@@ -1,519 +1,552 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html class="dark" lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nosso Espaço</title>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Nosso Espaço - Mural</title>
+    <!-- Google Fonts: Inter & JetBrains Mono -->
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet"/>
+    <!-- Material Symbols -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <link href="https://cdn-uicons.flaticon.com/2.1.0/uicons-brands/css/uicons-brands.css" rel="stylesheet"/>
+    
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "tertiary-container": "#8a2be2",
+                    "error": "#ffb4ab",
+                    "surface": "#1c1c1f",
+                    "surface-variant": "#353437",
+                    "on-background": "#f0f0f0",
+                    "on-surface": "#f0f0f0",
+                    "primary": "#ff00ff",
+                    "primary-container": "#ff00ff",
+                    "secondary-container": "#ff1493",
+                    "background": "#0f0f11",
+            },
+            "boxShadow": {
+                'brutal': '6px 6px 0px #000000',
+                'brutal-active': '2px 2px 0px #000000',
+                'brutal-hover': '8px 8px 0px #000000',
+            }
+          }
+        }
+      }
+    </script>
     <style>
-        /* =========================================
-           1. VARIÁVEIS E CORES (DARK MODE)
-           ========================================= */
-        :root {
-            --bg-color: #0f0f11;
-            --card-bg: #1c1c1f;
-            --text-main: #f0f0f0;
-            --text-muted: #888;
-            
-            /* Temas */
-            --magenta: #ff00ff;
-            --rosa: #ff1493;
-            --roxo: #8a2be2;
-            --chumbo: #4f4f51;
-
-            --theme-current: var(--magenta); /* Padrão */
-        }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        
         body {
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            min-height: 100vh;
-            padding: 20px;
+            font-family: 'Inter', sans-serif;
+            background-color: #0f0f11;
+            color: #f0f0f0;
         }
 
-        /* =========================================
-           2. MURAL E POST-ITS (LAYOUT)
-           ========================================= */
-        .mural {
+        .masonry-grid {
             column-count: 1;
-            column-gap: 15px;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding-bottom: 80px;
+            column-gap: 16px;
         }
-        
         @media (min-width: 768px) {
-            .mural { column-count: 3; }
+            .masonry-grid { column-count: 2; }
+        }
+        @media (min-width: 1024px) {
+            .masonry-grid { column-count: 3; column-gap: 24px; }
         }
 
         .post-it {
-            background-color: var(--card-bg);
-            border-left: 4px solid var(--theme-current);
-            border-radius: 8px;
-            padding: 15px;
-            margin-bottom: 15px;
-            box-shadow: 4px 4px 0px rgba(0,0,0,0.6);
             break-inside: avoid;
+            margin-bottom: 16px;
+            background-color: #1c1c1f;
+            border: 2px solid #000;
+            box-shadow: 6px 6px 0px #000000;
+            position: relative;
+            transition: all 0.2s ease;
             cursor: pointer;
             overflow: hidden;
-            max-height: 65px; /* Comprimido */
-            transition: max-height 0.4s ease, background-color 0.2s;
         }
-
-        .post-it.expandido { max-height: 600px; } /* Expandido */
         
-        .post-it-header {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-weight: bold;
-            font-size: 16px;
-            pointer-events: none;
-        }
-
-        .post-it-header span { color: var(--theme-current); }
-        .post-it-content { margin-top: 20px; color: var(--text-muted); font-size: 14px; pointer-events: none; }
-        .post-it-content p { margin-bottom: 8px; }
-        .post-it-content strong { color: var(--text-main); }
-
-        /* =========================================
-           3. BOTÃO FLUTUANTE (+)
-           ========================================= */
-        .fab {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            background-color: var(--card-bg);
-            border: 2px solid var(--text-main);
-            color: var(--text-main);
-            font-size: 30px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            box-shadow: 4px 4px 0px rgba(0,0,0,0.8);
-            z-index: 10;
-        }
-
-        /* =========================================
-           4. MODAL GLASSMORPHISM
-           ========================================= */
-        .modal-backdrop {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.4);
-            backdrop-filter: blur(8px);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 20;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.3s;
-        }
-        .modal-backdrop.active { opacity: 1; pointer-events: auto; }
-
-        .glass-panel {
-            background: rgba(28, 28, 31, 0.85);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 16px;
-            width: 90%;
-            max-width: 400px;
-            padding: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            transform: scale(0.9);
-            transition: transform 0.3s;
-        }
-        .modal-backdrop.active .glass-panel { transform: scale(1); }
-
-        /* Controles do Formulário */
-        .form-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; }
-        
-        .user-btns { display: flex; gap: 10px; }
-        .btn-user {
-            width: 40px; height: 40px;
-            border-radius: 12px;
-            background: transparent;
-            border: 2px solid var(--text-muted);
-            color: var(--text-muted);
-            font-weight: bold; font-size: 16px;
-            cursor: pointer;
-        }
-        .btn-user.active {
-            border-color: var(--theme-current);
-            color: var(--theme-current);
-            background: rgba(255,255,255,0.05);
-        }
-
-        .time-display { font-size: 14px; color: var(--text-muted); text-align: right; }
-        
-        .theme-selector { display: flex; gap: 8px; margin-top: 10px; }
-        .theme-dot { width: 16px; height: 16px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; }
-        .theme-dot.active { border-color: #fff; }
-
-        .section-title { font-size: 12px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 10px; margin-top: 20px;}
-
-        /* Grade de Ícones */
-        .icon-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
-        .icon-btn {
-            background: rgba(255,255,255,0.05); border: none; border-radius: 12px;
-            font-size: 24px; padding: 10px 0; cursor: pointer; color: var(--text-main);
-            transition: 0.2s;
-        }
-        .icon-btn.active { background: var(--theme-current); color: #fff; box-shadow: 0 0 15px var(--theme-current); }
-
-        /* Inputs Ocultos (Jogo/Outro) */
-        .hidden-input {
-            width: 100%; background: rgba(0,0,0,0.3); border: none; border-bottom: 2px solid var(--theme-current);
-            color: #fff; padding: 10px; margin-top: 10px; border-radius: 4px 4px 0 0; outline: none;
+        .post-it .accordion-content {
             display: none;
         }
-        .hidden-input.show { display: block; }
 
-        /* Localização (Gangorra) */
-        .location-switch { display: flex; background: rgba(0,0,0,0.3); border-radius: 8px; overflow: hidden; }
-        .loc-btn { flex: 1; padding: 10px; text-align: center; cursor: pointer; font-size: 14px; border: none; background: transparent; color: var(--text-muted); }
-        .loc-btn.active { background: var(--theme-current); color: #fff; font-weight: bold; }
-
-        .location-details { display: none; margin-top: 10px; flex-direction: column; gap: 8px; }
-        .location-details.show { display: flex; }
-        .location-details input { background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 8px; border-radius: 6px; outline: none; }
-
-        /* Anotações e Botão Salvar */
-        textarea { width: 100%; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 10px; border-radius: 8px; outline: none; resize: none; margin-top: 20px; height: 60px; }
-        .btn-save { width: 100%; padding: 15px; border: none; border-radius: 8px; background: var(--theme-current); color: #fff; font-weight: bold; font-size: 16px; margin-top: 20px; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.4); }
-
-        /* =========================================
-           5. ÁREA SECRETA
-           ========================================= */
-        #secret-area {
-            display: none; padding: 30px; background: #000; min-height: 100vh; position: fixed; top: 0; left: 0; width: 100%; z-index: 50;
+        .post-it.expanded .accordion-content {
+            display: block;
         }
-        .btn-secret { padding: 15px; width: 100%; margin-bottom: 15px; font-weight: bold; border-radius: 8px; cursor: pointer; border: none;}
-        .btn-export { background: #fff; color: #000; }
-        .btn-clear { background: #ff3333; color: #fff; }
-        .btn-back { background: #333; color: #fff; }
+
+        @media (min-width: 1024px) {
+            .post-it {
+                margin-bottom: 24px;
+            }
+        }
+
+        .post-it:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 8px 8px 0px #000000;
+        }
+        
+        .post-it:active {
+            transform: translate(4px, 4px);
+            box-shadow: 2px 2px 0px #000000;
+        }
+
+        /* Tape Effect */
+        .post-it::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%) rotate(-3deg);
+            width: 40px;
+            height: 12px;
+            border: 1px solid #000;
+            z-index: 1;
+        }
+
+        .tape-magenta::before { background-color: rgba(255, 0, 255, 0.85); }
+        .tape-pink::before { background-color: rgba(255, 20, 147, 0.85); transform: translateX(-50%) rotate(2deg); }
+        .tape-purple::before { background-color: rgba(138, 43, 226, 0.85); transform: translateX(-50%) rotate(-2deg); }
+        .tape-chumbo::before { background-color: rgba(79, 79, 79, 0.85); transform: translateX(-50%) rotate(2deg); }
+
+        /* Folded Corner */
+        .post-it-fold {
+            position: relative;
+        }
+        .post-it-fold::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            right: -2px;
+            border-width: 20px 20px 0 0;
+            border-style: solid;
+            border-color: #333 #0f0f11 #0f0f11 #333;
+            border-left-color: transparent;
+            border-bottom-color: transparent;
+            box-shadow: -2px -2px 0px rgba(0,0,0,0.5);
+        }
+
+        .glass-modal {
+            background-color: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        /* Toggle Button Styles */
+        .toggle-btn {
+            @apply flex-1 py-3 border-2 border-black bg-surface-variant text-on-surface text-center cursor-pointer transition-all font-bold;
+        }
+        .toggle-btn.active {
+            @apply bg-primary-container text-[#0f0f11] shadow-brutal translate-x-[-2px] translate-y-[-2px];
+        }
+
+        /* Icon Grid Styles */
+        .icon-btn {
+            @apply flex flex-col items-center justify-center p-3 border-2 border-black bg-surface-variant text-on-surface cursor-pointer transition-all aspect-square;
+        }
+        .icon-btn.active {
+            @apply bg-secondary-container text-[#0f0f11] shadow-brutal translate-x-[-2px] translate-y-[-2px];
+        }
     </style>
 </head>
-<body>
+<body class="min-h-screen overflow-x-hidden bg-[#0f0f11]">
 
-    <!-- MURAL PRINCIPAL -->
-    <div class="mural" id="mural"></div>
+<!-- Top Navigation -->
+<header class="flex items-center justify-between whitespace-nowrap border-b-2 border-black px-4 md:px-10 py-3 bg-[#0f0f11] sticky top-0 z-40">
+    <div class="flex items-center gap-4 text-white">
+        <h2 class="text-white text-2xl font-bold leading-tight tracking-[-0.02em]">Post its</h2>
+    </div>
+</header>
 
-    <!-- BOTÃO FLUTUANTE -->
-    <div class="fab" id="fab-add">+</div>
+<main class="max-w-[1200px] mx-auto px-4 md:px-12 py-8">
+    <div class="flex flex-wrap justify-between items-end gap-3 mb-8">
+        <h1 class="text-[#f0f0f0] text-3xl font-extrabold tracking-tight">Mural</h1>
+    </div>
 
-    <!-- MODAL DE PREENCHIMENTO (GLASS) -->
-    <div class="modal-backdrop" id="modal-backdrop">
-        <div class="glass-panel" id="post-it-form">
-            
-            <div class="form-top">
-                <div>
-                    <div class="user-btns">
-                        <button class="btn-user" data-user="K">K</button>
-                        <button class="btn-user" data-user="L">L</button>
-                    </div>
-                    <div class="theme-selector">
-                        <div class="theme-dot active" style="background: var(--magenta);" data-color="#ff00ff" data-name="magenta"></div>
-                        <div class="theme-dot" style="background: var(--rosa);" data-color="#ff1493" data-name="rosa"></div>
-                        <div class="theme-dot" style="background: var(--roxo);" data-color="#8a2be2" data-name="roxo"></div>
-                        <div class="theme-dot" style="background: var(--chumbo);" data-color="#888888" data-name="chumbo"></div>
-                    </div>
-                </div>
-                <div class="time-display">
-                    <div id="current-date">--/--/----</div>
-                    <div id="current-time">--:--</div>
-                </div>
-            </div>
-
-            <div class="section-title">O que vou fazer?</div>
-            <div class="icon-grid" id="activity-grid">
-                <button class="icon-btn" data-act="Nenhum">🚫</button>
-                <button class="icon-btn" data-act="TikTok">📱</button>
-                <button class="icon-btn" data-act="Insta">📸</button>
-                <button class="icon-btn" data-act="Pinterest">📌</button>
-                <button class="icon-btn" data-act="YouTube">▶️</button>
-                <button class="icon-btn" data-act="Roblox">🧱</button>
-                <button class="icon-btn" data-act="Jogo" id="btn-jogo">🎮</button>
-                <button class="icon-btn" data-act="Outro" id="btn-outro">➕</button>
-            </div>
-            <input type="text" id="extra-input" class="hidden-input" placeholder="Qual?">
-
-            <div class="section-title">Onde estou?</div>
-            <div class="location-switch">
-                <button class="loc-btn active" data-loc="casa">🏠 Em Casa</button>
-                <button class="loc-btn" data-loc="rua">🚶‍♂️ Vou Sair</button>
-            </div>
-            <div class="location-details" id="loc-details">
-                <input type="text" id="out-dest" placeholder="Destino">
-                <input type="text" id="out-motivo" placeholder="Motivo">
-                <input type="time" id="out-volta" placeholder="Volto às">
-            </div>
-
-            <textarea id="notes-input" placeholder="Quer anotar mais alguma coisa? (Opcional)"></textarea>
-
-            <button class="btn-save" id="btn-save">Salvar</button>
+    <!-- O Baú Secreto (Acesso via Hash na URL: #bau) -->
+    <div class="hidden mb-8 p-6 bg-surface-variant border-2 border-black shadow-brutal" id="bau">
+        <h2 class="text-2xl font-bold text-white mb-4">O Baú Secreto 🤫</h2>
+        <div class="flex gap-4">
+            <button class="px-4 py-2 bg-secondary-container text-black font-bold border-2 border-black shadow-brutal hover:translate-x-[-2px] hover:translate-y-[-2px] transition-all" id="btnExport">
+                Exportar TXT
+            </button>
+            <button class="px-4 py-2 bg-error text-black font-bold border-2 border-black shadow-brutal hover:translate-x-[-2px] hover:translate-y-[-2px] transition-all" id="btnClear">
+                Limpar Mural
+            </button>
         </div>
     </div>
 
-    <!-- ÁREA SECRETA -->
-    <div id="secret-area">
-        <h2 style="margin-bottom: 20px;">📦 Cofre de Registros</h2>
-        <button class="btn-secret btn-export" id="btn-export">Exportar Histórico (.txt)</button>
-        <button class="btn-secret btn-clear" id="btn-clear">Limpar Mural</button>
-        <button class="btn-secret btn-back" id="btn-back-secret">Voltar</button>
+    <!-- Masonry Feed -->
+    <div class="masonry-grid" id="feed">
+        <!-- Dynamic Content Will Load Here -->
     </div>
+</main>
 
-    <!-- FIREBASE E LÓGICA DO APP -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-        import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, getDocs, deleteDoc, doc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+<!-- Floating Action Button -->
+<button class="fixed bottom-8 right-8 w-16 h-16 bg-primary-container text-[#0f0f11] border-2 border-black shadow-brutal hover:shadow-brutal-hover active:shadow-brutal-active hover:-translate-y-1 transition-all flex items-center justify-center rounded-full z-40" onclick="window.toggleModal()">
+    <span class="material-symbols-outlined text-3xl font-bold" data-icon="add">add</span>
+</button>
 
-        // Configuração Firebase
-        const firebaseConfig = {
-            apiKey: "AIzaSyCGee-Amtjd4mJN2vwHnrStJyd3-f-3zkw",
-            authDomain: "love-dce65.firebaseapp.com",
-            projectId: "love-dce65",
-            storageBucket: "love-dce65.firebasestorage.app",
-            messagingSenderId: "582479938503",
-            appId: "1:582479938503:web:e0e104448e511b17620fe2"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-        const registrosRef = collection(db, "registros_tempo");
-
-        // Elementos da Interface
-        const root = document.documentElement;
-        const mural = document.getElementById('mural');
-        const modal = document.getElementById('modal-backdrop');
-        const glassPanel = document.getElementById('post-it-form');
-        const extraInput = document.getElementById('extra-input');
-        const locDetails = document.getElementById('loc-details');
+<!-- Creation Modal (Glassmorphism) -->
+<div class="hidden fixed inset-0 z-50 glass-modal flex items-center justify-center p-4 overflow-y-auto" id="create-modal">
+    <div class="bg-surface-container border border-white/10 shadow-2xl max-w-lg w-full relative p-6 md:p-8 animate-fade-in my-auto" style="box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);">
+        <button class="absolute top-4 right-4 text-[#888888] hover:text-[#f0f0f0] transition-colors" onclick="window.toggleModal()">
+            <span class="material-symbols-outlined" data-icon="close">close</span>
+        </button>
+        <h2 class="text-2xl font-bold text-[#f0f0f0] mb-6 border-b border-white/10 pb-4">Nova Nota_</h2>
         
-        // Estado do Formulário
-        let state = {
-            user: null,
-            themeColor: '#ff00ff',
-            themeName: 'magenta',
-            activity: null,
-            location: 'casa'
-        };
+        <form class="flex flex-col gap-6" id="notaForm">
+            <!-- User Toggle -->
+            <div>
+                <label class="block font-mono text-sm text-[#888888] mb-2">QUEM É VOCÊ?</label>
+                <div class="flex gap-4">
+                    <div class="toggle-btn active" data-group="user" data-value="K" onclick="window.selectToggle(this)">[ K ]</div>
+                    <div class="toggle-btn" data-group="user" data-value="L" onclick="window.selectToggle(this)">[ L ]</div>
+                </div>
+                <input id="user" type="hidden" value="K"/>
+            </div>
 
-        // 1. Controle de Relógio
-        function updateTime() {
-            const now = new Date();
-            document.getElementById('current-date').innerText = now.toLocaleDateString('pt-BR');
-            document.getElementById('current-time').innerText = now.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+            <!-- Emotion Grid -->
+            <div>
+                <label class="block font-mono text-sm text-[#888888] mb-2">HUMOR</label>
+                <div class="grid grid-cols-5 gap-2">
+                    <div class="icon-btn active" data-group="emotion" data-value="😌" onclick="window.selectToggle(this)"><span class="text-2xl">😌</span></div>
+                    <div class="icon-btn" data-group="emotion" data-value="😐" onclick="window.selectToggle(this)"><span class="text-2xl">😐</span></div>
+                    <div class="icon-btn" data-group="emotion" data-value="😔" onclick="window.selectToggle(this)"><span class="text-2xl">😔</span></div>
+                    <div class="icon-btn" data-group="emotion" data-value="😤" onclick="window.selectToggle(this)"><span class="text-2xl">😤</span></div>
+                    <div class="icon-btn" data-group="emotion" data-value="😴" onclick="window.selectToggle(this)"><span class="text-2xl">😴</span></div>
+                </div>
+                <input id="emotion" type="hidden" value="😌"/>
+            </div>
+
+            <!-- Activity Grid -->
+            <div>
+                <label class="block font-mono text-sm text-[#888888] mb-2">O QUE ESTÁ FAZENDO?</label>
+                <div class="grid grid-cols-4 gap-2">
+                    <div class="icon-btn active" data-group="activity" data-value="🚫 Nenhum" onclick="window.selectToggle(this)">
+                        <span class="text-xl mb-1">🚫</span><span class="text-[10px]">Nenhum</span>
+                    </div>
+                    <div class="icon-btn" data-group="activity" data-value="📱 TikTok" onclick="window.selectToggle(this)">
+                        <i class="fi fi-brands-tik-tok text-xl mb-1"></i><span class="text-[10px]">TikTok</span>
+                    </div>
+                    <div class="icon-btn" data-group="activity" data-value="📸 Insta" onclick="window.selectToggle(this)">
+                        <i class="fi fi-brands-instagram text-xl mb-1"></i><span class="text-[10px]">Insta</span>
+                    </div>
+                    <div class="icon-btn" data-group="activity" data-value="📌 Pinterest" onclick="window.selectToggle(this)">
+                        <i class="fi fi-brands-pinterest text-xl mb-1"></i><span class="text-[10px]">Pinterest</span>
+                    </div>
+                    <div class="icon-btn" data-group="activity" data-value="▶️ YouTube" onclick="window.selectToggle(this)">
+                        <i class="fi fi-brands-youtube-circle text-xl mb-1"></i><span class="text-[10px]">YouTube</span>
+                    </div>
+                    <div class="icon-btn" data-group="activity" data-value="🧱 Roblox" onclick="window.selectToggle(this)">
+                        <span class="text-xl mb-1">🧱</span><span class="text-[10px]">Roblox</span>
+                    </div>
+                    <div class="icon-btn" data-group="activity" data-value="🎮 Jogando" onclick="window.selectToggle(this)">
+                        <span class="text-xl mb-1">🎮</span><span class="text-[10px]">Jogando</span>
+                    </div>
+                    <div class="icon-btn" data-group="activity" data-value="➕ Outro" onclick="window.selectToggle(this)">
+                        <span class="text-xl mb-1">➕</span><span class="text-[10px]">Outro</span>
+                    </div>
+                </div>
+                <input id="activity" type="hidden" value="🚫 Nenhum"/>
+                <input class="hidden w-full mt-3 bg-[#0e0e10] border-2 border-[#39393b] text-[#f0f0f0] px-4 py-3 font-mono focus:outline-none focus:border-[#ff00ff]" id="extra-activity" placeholder="Qual jogo?" type="text"/>
+            </div>
+
+            <!-- Location Toggle -->
+            <div>
+                <label class="block font-mono text-sm text-[#888888] mb-2">ONDE?</label>
+                <div class="flex gap-4">
+                    <div class="toggle-btn active" data-group="location" data-value="home" onclick="window.selectLocation(this)">
+                        <div class="flex items-center justify-center gap-2"><span>🏠 Em Casa</span></div>
+                    </div>
+                    <div class="toggle-btn" data-group="location" data-value="out" onclick="window.selectLocation(this)">
+                        <div class="flex items-center justify-center gap-2"><span>🚶‍♂️ Vou Sair</span></div>
+                    </div>
+                </div>
+                <input id="location" type="hidden" value="home"/>
+            </div>
+
+            <!-- Conditional Out Fields -->
+            <div class="hidden flex-col gap-4" id="out-fields">
+                <div>
+                    <label class="block font-mono text-sm text-[#888888] mb-2">DESTINO</label>
+                    <input class="w-full bg-background border-2 border-surface-variant text-[#f0f0f0] px-4 py-3 focus:outline-none focus:border-tertiary-container" id="destino" placeholder="Para onde?" type="text"/>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block font-mono text-sm text-[#888888] mb-2">MOTIVO</label>
+                        <input class="w-full bg-background border-2 border-surface-variant text-[#f0f0f0] px-4 py-3 focus:outline-none focus:border-tertiary-container" id="motivo" placeholder="Fazer o quê?" type="text"/>
+                    </div>
+                    <div>
+                        <label class="block font-mono text-sm text-[#888888] mb-2">VOLTA</label>
+                        <input class="w-full bg-background border-2 border-surface-variant text-[#f0f0f0] px-4 py-3 focus:outline-none focus:border-tertiary-container" id="volta" type="time"/>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Note Textarea -->
+            <div>
+                <label class="block font-mono text-sm text-[#888888] mb-2">NOTA (OPCIONAL)</label>
+                <textarea class="w-full bg-background border-2 border-surface-variant text-[#f0f0f0] px-4 py-3 font-mono focus:outline-none focus:border-primary-container resize-none" id="notaText" placeholder="Mais detalhes..." rows="3"></textarea>
+            </div>
+
+            <!-- Tape Color -->
+            <div>
+                <label class="block font-mono text-sm text-[#888888] mb-2">COR DA FITA</label>
+                <div class="flex gap-4 mt-2">
+                    <div class="w-10 h-10 rounded-full cursor-pointer border-4 border-white active transition-all" data-group="tapeColor" data-value="tape-magenta" onclick="window.selectToggle(this)" style="background-color: #ff00ff;"></div>
+                    <div class="w-10 h-10 rounded-full cursor-pointer border-4 border-transparent transition-all" data-group="tapeColor" data-value="tape-pink" onclick="window.selectToggle(this)" style="background-color: #ff1493;"></div>
+                    <div class="w-10 h-10 rounded-full cursor-pointer border-4 border-transparent transition-all" data-group="tapeColor" data-value="tape-purple" onclick="window.selectToggle(this)" style="background-color: #8a2be2;"></div>
+                    <div class="w-10 h-10 rounded-full cursor-pointer border-4 border-transparent transition-all" data-group="tapeColor" data-value="tape-chumbo" onclick="window.selectToggle(this)" style="background-color: #4f4f4f;"></div>
+                    <input id="tapeColor" type="hidden" value="tape-magenta"/>
+                </div>
+            </div>
+
+            <button class="mt-2 w-full bg-primary-container text-[#0f0f11] font-bold text-lg py-4 border-2 border-black shadow-brutal hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-brutal-hover active:translate-x-[2px] active:translate-y-[2px] active:shadow-brutal-active transition-all" id="btnSave" type="button">
+                Pregar no Mural
+            </button>
+        </form>
+    </div>
+</div>
+
+<script>
+    // --- UI Logic (Global Scope) ---
+    window.toggleModal = function() {
+        const modal = document.getElementById('create-modal');
+        modal.classList.toggle('hidden');
+    };
+
+    window.selectToggle = function(element) {
+        const group = element.dataset.group;
+        const value = element.dataset.value;
+        
+        document.querySelectorAll(`[data-group="${group}"]`).forEach(el => {
+            el.classList.remove('active');
+            if (group === 'tapeColor') {
+                el.classList.remove('border-white');
+                el.classList.add('border-transparent');
+            }
+        });
+        
+        element.classList.add('active');
+        if (group === 'tapeColor') {
+            element.classList.add('border-white');
+            element.classList.remove('border-transparent');
         }
-        setInterval(updateTime, 1000); updateTime();
-
-        // 2. Abrir/Fechar Modal
-        document.getElementById('fab-add').onclick = () => {
-            modal.classList.add('active');
-        };
-        modal.onclick = (e) => {
-            if (e.target === modal) modal.classList.remove('active');
-        };
-
-        // 3. Seleção de Usuário (K / L)
-        document.querySelectorAll('.btn-user').forEach(btn => {
-            btn.onclick = () => {
-                document.querySelectorAll('.btn-user').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                state.user = btn.dataset.user;
-            };
-        });
-
-        // 4. Seleção de Tema (Bolinhas)
-        document.querySelectorAll('.theme-dot').forEach(dot => {
-            dot.onclick = () => {
-                document.querySelectorAll('.theme-dot').forEach(d => d.classList.remove('active'));
-                dot.classList.add('active');
-                state.themeColor = dot.dataset.color;
-                state.themeName = dot.dataset.name;
-                root.style.setProperty('--theme-current', state.themeColor);
-            };
-        });
-
-        // 5. Seleção de Atividade
-        document.querySelectorAll('.icon-btn').forEach(btn => {
-            btn.onclick = () => {
-                document.querySelectorAll('.icon-btn').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                state.activity = btn.dataset.act;
-                
-                if (state.activity === 'Jogo' || state.activity === 'Outro') {
-                    extraInput.classList.add('show');
-                    extraInput.placeholder = state.activity === 'Jogo' ? "Qual jogo?" : "O que vai fazer?";
-                    setTimeout(() => extraInput.focus(), 100);
-                } else {
-                    extraInput.classList.remove('show');
-                    extraInput.value = '';
-                }
-            };
-        });
-
-        // 6. Seleção de Local
-        document.querySelectorAll('.loc-btn').forEach(btn => {
-            btn.onclick = () => {
-                document.querySelectorAll('.loc-btn').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                state.location = btn.dataset.loc;
-                
-                if (state.location === 'rua') {
-                    locDetails.classList.add('show');
-                } else {
-                    locDetails.classList.remove('show');
-                }
-            };
-        });
-
-        // 7. Salvar Dados
-        document.getElementById('btn-save').onclick = async () => {
-            if (!state.user) { alert("Selecione quem é você (K ou L)!"); return; }
-            if (!state.activity) { alert("Selecione uma atividade!"); return; }
-
-            const now = new Date();
-            let actFinal = state.activity;
-            if ((state.activity === 'Jogo' || state.activity === 'Outro') && extraInput.value) {
-                actFinal += `: ${extraInput.value}`;
-            }
-
-            const registro = {
-                user: state.user,
-                themeName: state.themeName,
-                themeColor: state.themeColor,
-                activity: actFinal,
-                activityIcon: document.querySelector('.icon-btn.active').innerText,
-                locationType: state.location,
-                locDestino: document.getElementById('out-dest').value,
-                locMotivo: document.getElementById('out-motivo').value,
-                locVolta: document.getElementById('out-volta').value,
-                notes: document.getElementById('notes-input').value,
-                timeStr: now.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
-                dateStr: now.toLocaleDateString('pt-BR'),
-                timestamp: serverTimestamp()
-            };
-
-            try {
-                btn-save.innerText = "Salvando...";
-                await addDoc(registrosRef, registro);
-                
-                // Reseta formulário
-                modal.classList.remove('active');
-                btn-save.innerText = "Salvar";
-                extraInput.value = '';
-                document.getElementById('notes-input').value = '';
-            } catch (e) {
-                console.error("Erro:", e);
-                alert("Erro ao salvar.");
-            }
-        };
-
-        // 8. Renderizar Mural (Tempo Real)
-        const q = query(registrosRef, orderBy("timestamp", "desc"));
-        onSnapshot(q, (snapshot) => {
-            mural.innerHTML = '';
-            snapshot.forEach((docSnap) => {
-                const data = docSnap.data();
-                
-                // Formatação do Card
-                const div = document.createElement('div');
-                div.className = 'post-it';
-                div.style.setProperty('--theme-current', data.themeColor);
-                
-                let localIcon = data.locationType === 'casa' ? '🏠' : '🚶‍♂️';
-                
-                let htmlExpanded = `
-                    <p><strong>Horário:</strong> ${data.timeStr}</p>
-                `;
-                
-                if (data.locationType === 'rua') {
-                    htmlExpanded += `<p><strong>Destino:</strong> ${data.locDestino} | <strong>Motivo:</strong> ${data.locMotivo}</p>`;
-                    if(data.locVolta) htmlExpanded += `<p><strong>Volta prevista:</strong> ${data.locVolta}</p>`;
-                }
-                
-                if (data.notes) {
-                    htmlExpanded += `<p style="margin-top:10px;"><strong>Notas:</strong><br>${data.notes.replace(/\n/g, '<br>')}</p>`;
-                }
-
-                div.innerHTML = `
-                    <div class="post-it-header">
-                        <span>${data.user}</span> | ${localIcon} | ${data.activityIcon} ${data.activity.includes(':') ? data.activity.split(':')[1] : ''}
-                    </div>
-                    <div class="post-it-content">
-                        ${htmlExpanded}
-                    </div>
-                `;
-
-                // Efeito Sanfona
-                div.onclick = () => {
-                    const expandido = div.classList.contains('expandido');
-                    document.querySelectorAll('.post-it').forEach(p => p.classList.remove('expandido'));
-                    if (!expandido) div.classList.add('expandido');
-                };
-
-                mural.appendChild(div);
-            });
-        });
-
-        // =========================================
-        // 9. ÁREA SECRETA (Link Oculto)
-        // =========================================
-        const secretArea = document.getElementById('secret-area');
         
-        function checkSecretRoute() {
-            if (window.location.hash === '#bau') {
-                secretArea.style.display = 'block';
+        document.getElementById(group).value = value;
+        
+        if (group === 'activity') {
+            const extraInput = document.getElementById('extra-activity');
+            if (value === '🎮 Jogando' || value === '➕ Outro') {
+                extraInput.classList.remove('hidden');
+                extraInput.placeholder = value === '🎮 Jogando' ? 'Qual jogo?' : 'Detalhes...';
+                setTimeout(() => extraInput.focus(), 50);
             } else {
-                secretArea.style.display = 'none';
+                extraInput.classList.add('hidden');
+                extraInput.value = '';
             }
         }
+    };
+
+    window.selectLocation = function(element) {
+        window.selectToggle(element);
+        const value = element.dataset.value;
+        const outFields = document.getElementById('out-fields');
         
-        window.addEventListener('hashchange', checkSecretRoute);
-        checkSecretRoute();
+        if (value === 'out') {
+            outFields.classList.remove('hidden');
+            outFields.classList.add('flex');
+        } else {
+            outFields.classList.add('hidden');
+            outFields.classList.remove('flex');
+        }
+    };
+</script>
 
-        document.getElementById('btn-back-secret').onclick = () => {
-            window.location.hash = '';
+<!-- Firebase v10 Logic -->
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getFirestore, collection, addDoc, onSnapshot, serverTimestamp, query, orderBy, getDocs, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyCGee-Amtjd4mJN2vwHnrStJyd3-f-3zkw",
+        authDomain: "love-dce65.firebaseapp.com",
+        projectId: "love-dce65",
+        storageBucket: "love-dce65.firebasestorage.app",
+        messagingSenderId: "582479938503",
+        appId: "1:582479938503:web:e0e104448e511b17620fe2"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const collectionRef = collection(db, "registros_tempo");
+
+    // Save Functionality
+    document.getElementById('btnSave').addEventListener('click', async () => {
+        const btnSave = document.getElementById('btnSave');
+        btnSave.disabled = true;
+        btnSave.textContent = "Salvando...";
+
+        const user = document.getElementById('user').value;
+        const emotion = document.getElementById('emotion').value;
+        let activity = document.getElementById('activity').value;
+        const extraActivity = document.getElementById('extra-activity').value;
+        const locationType = document.getElementById('location').value;
+        const tapeColor = document.getElementById('tapeColor').value;
+        const notes = document.getElementById('notaText').value;
+        
+        if ((activity === '🎮 Jogando' || activity === '➕ Outro') && extraActivity.trim() !== '') {
+            activity += `: ${extraActivity.trim()}`;
+        }
+
+        const now = new Date();
+        const docData = {
+            user,
+            emotion,
+            activity,
+            locationType,
+            tapeColor,
+            notes,
+            destino: locationType === 'out' ? document.getElementById('destino').value : null,
+            motivo: locationType === 'out' ? document.getElementById('motivo').value : null,
+            volta: locationType === 'out' ? document.getElementById('volta').value : null,
+            timeStr: now.toTimeString().substring(0,5),
+            dateStr: now.toISOString().substring(0,10),
+            timestamp: serverTimestamp()
         };
 
-        document.getElementById('btn-export').onclick = async () => {
-            const snap = await getDocs(q);
-            let texto = "====================================\n";
-            texto += "HISTÓRICO DO NOSSO ESPAÇO\n";
-            texto += "====================================\n\n";
-
-            snap.forEach(d => {
-                const doc = d.data();
-                texto += `[${doc.user}] - ${doc.dateStr} às ${doc.timeStr}\n`;
-                texto += `Status: ${doc.locationType === 'casa' ? 'Em Casa' : 'Saiu'}\n`;
-                texto += `Atividade: ${doc.activity}\n`;
-                if(doc.notes) texto += `Notas: ${doc.notes}\n`;
-                texto += `------------------------------------\n`;
-            });
-
-            const blob = new Blob([texto], { type: "text/plain" });
-            const link = document.createElement("a");
-            link.href = URL.createObjectURL(blob);
-            link.download = `historico_tempo_${new Date().getTime()}.txt`;
-            link.click();
-        };
-
-        document.getElementById('btn-clear').onclick = async () => {
-            if(confirm("Tem certeza? Verifique se já exportou o histórico antes de apagar tudo!")) {
-                const snap = await getDocs(registrosRef);
-                snap.forEach(async (d) => {
-                    await deleteDoc(doc(db, "registros_tempo", d.id));
-                });
-                alert("Mural limpo!");
+        try {
+            await addDoc(collectionRef, docData);
+            window.toggleModal();
+            document.getElementById('notaForm').reset();
+            document.getElementById('extra-activity').classList.add('hidden');
+            if (locationType === 'out') {
+                document.querySelector('.toggle-btn[data-value="home"]').click();
             }
-        };
+        } catch (e) {
+            alert("Erro ao salvar: " + e.message);
+        } finally {
+            btnSave.disabled = false;
+            btnSave.textContent = "Pregar no Mural";
+        }
+    });
 
-    </script>
+    // Vault Logic (Hash routing)
+    const vaultSection = document.getElementById('bau');
+    window.addEventListener('hashchange', checkHash);
+    
+    function checkHash() {
+        if (window.location.hash === '#bau') {
+            vaultSection.classList.remove('hidden');
+        } else {
+            vaultSection.classList.add('hidden');
+        }
+    }
+    checkHash(); // Check on load
+
+    // Export Functionality
+    const q = query(collectionRef, orderBy("timestamp", "desc"));
+    document.getElementById('btnExport').addEventListener('click', async () => {
+        const snap = await getDocs(q);
+        let txt = "COFRE DE REGISTROS - POST ITS\n==============================\n\n";
+        snap.forEach(d => {
+            const note = d.data();
+            txt += `Data/Hora: ${note.dateStr} ${note.timeStr}\n`;
+            txt += `Usuário: ${note.user} | Emoção: ${note.emotion} | Tema: ${note.tapeColor}\n`;
+            txt += `Atividade: ${note.activity}\n`;
+            txt += `Localização: ${note.locationType === 'home' ? 'EM CASA' : 'VOU SAIR'}\n`;
+            if (note.locationType === 'out') {
+                txt += `   Destino: ${note.destino} | Motivo: ${note.motivo} | Volta: ${note.volta}\n`;
+            }
+            if (note.notes) {
+                txt += `Notas:\n${note.notes}\n`;
+            }
+            txt += `------------------------------\n`;
+        });
+        
+        const blob = new Blob([txt], { type: "text/plain" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `registros_tempo_${new Date().toISOString().substring(0,10)}.txt`;
+        a.click();
+        URL.revokeObjectURL(url);
+    });
+
+    // Clear Mural Functionality
+    document.getElementById('btnClear').addEventListener('click', async () => {
+        if (confirm("TEM CERTEZA? Isso vai apagar todos os post-its do mural atual.")) {
+            if (confirm("Última chance! Confirma a exclusão de tudo?")) {
+                const btnClear = document.getElementById('btnClear');
+                btnClear.textContent = "Apagando...";
+                btnClear.disabled = true;
+
+                const snap = await getDocs(collectionRef);
+                const promises = [];
+                snap.forEach((d) => {
+                    promises.push(deleteDoc(doc(db, "registros_tempo", d.id)));
+                });
+
+                await Promise.all(promises);
+                
+                btnClear.textContent = "Limpar Mural";
+                btnClear.disabled = false;
+                alert("Mural limpo com sucesso!");
+            }
+        }
+    });
+
+    // Realtime Feed Rendering
+    const feed = document.getElementById('feed');
+    onSnapshot(q, (snapshot) => {
+        feed.innerHTML = '';
+        snapshot.forEach((docSnap) => {
+            const note = docSnap.data();
+            const article = document.createElement('article');
+            article.className = `post-it ${note.tapeColor} post-it-fold p-5`;
+            article.onclick = function() { this.classList.toggle('expanded'); };
+
+            let locationIcon = note.locationType === 'home' ? '🏠' : '🚶‍♂️';
+            
+            let extraContent = '';
+            if (note.locationType === 'out') {
+                extraContent = `
+                    <div class="mt-4 p-3 border-2 border-dashed border-white/20 bg-black/20 text-sm font-mono text-white">
+                        <p><strong>📍 P/ Onde:</strong> ${note.destino || '---'}</p>
+                        <p><strong>🎯 Motivo:</strong> ${note.motivo || '---'}</p>
+                        <p><strong>⏳ Volta:</strong> ${note.volta || '---'}</p>
+                    </div>
+                `;
+            }
+
+            let textContent = note.notes ? `<p class="mt-4 font-mono text-[#f0f0f0] whitespace-pre-wrap">${note.notes}</p>` : '';
+
+            article.innerHTML = `
+                <header class="flex justify-between items-start">
+                    <div class="flex items-center gap-3">
+                        <span class="w-10 h-10 flex items-center justify-center bg-surface-variant border-2 border-black text-[#f0f0f0] font-bold text-lg">${note.user}</span>
+                        <div class="flex flex-col">
+                            <span class="font-mono text-xs text-[#888888]">${note.timeStr || 'Agora'}</span>
+                            <div class="flex gap-2 text-sm mt-1 font-mono">
+                                <span>${note.emotion}</span>
+                                <span>|</span>
+                                <span>${locationIcon}</span>
+                                ${note.activity !== '🚫 Nenhum' ? `<span>| ${note.activity}</span>` : ''}
+                            </div>
+                        </div>
+                    </div>
+                </header>
+                <div class="accordion-content">
+                    ${extraContent}
+                    ${textContent}
+                </div>
+            `;
+            feed.appendChild(article);
+        });
+    });
+</script>
 </body>
 </html>
