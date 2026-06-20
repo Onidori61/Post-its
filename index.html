@@ -136,18 +136,18 @@
 
         /* Toggle Button Styles */
         .toggle-btn {
-            @apply flex-1 py-3 border-2 border-black bg-surface-variant text-on-surface text-center cursor-pointer transition-all font-bold;
+            display: flex; align-items: center; justify-content: center; flex: 1; padding: 0.75rem 0; border: 2px solid #000; background-color: #353437; color: #f0f0f0; text-align: center; cursor: pointer; transition: all 0.2s; font-weight: bold; border-radius: 8px;
         }
         .toggle-btn.active {
-            @apply bg-primary-container text-[#0f0f11] shadow-brutal translate-x-[-2px] translate-y-[-2px];
+            background-color: #ff00ff; color: #0f0f11; box-shadow: 4px 4px 0px #000000; transform: translate(-2px, -2px); border-radius: 8px;
         }
 
         /* Icon Grid Styles */
         .icon-btn {
-            @apply flex flex-col items-center justify-center p-3 border-2 border-black bg-surface-variant text-on-surface cursor-pointer transition-all aspect-square;
+            display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 0.5rem; border: 2px solid #000; background-color: #353437; color: #f0f0f0; cursor: pointer; transition: all 0.2s; aspect-ratio: 1; border-radius: 8px;
         }
         .icon-btn.active {
-            @apply bg-secondary-container text-[#0f0f11] shadow-brutal translate-x-[-2px] translate-y-[-2px];
+            background-color: #ff1493; color: #0f0f11; box-shadow: 4px 4px 0px #000000; transform: translate(-2px, -2px); border-radius: 8px;
         }
     </style>
 </head>
@@ -226,28 +226,28 @@
                 <label class="block font-mono text-sm text-[#888888] mb-2">O QUE ESTÁ FAZENDO?</label>
                 <div class="grid grid-cols-4 gap-2">
                     <div class="icon-btn active" data-group="activity" data-value="🚫 Nenhum" onclick="window.selectToggle(this)">
-                        <span class="text-xl mb-1">🚫</span><span class="text-[10px]">Nenhum</span>
+                        <img src="https://i.ibb.co/B2ftxvvf/image.png" class="w-6 h-6 mb-1 object-contain" alt="Nenhum"><span class="text-[10px] mt-1">Nenhum</span>
                     </div>
                     <div class="icon-btn" data-group="activity" data-value="📱 TikTok" onclick="window.selectToggle(this)">
-                        <i class="fi fi-brands-tik-tok text-xl mb-1"></i><span class="text-[10px]">TikTok</span>
+                        <i class="fi fi-brands-tik-tok text-2xl mb-1"></i><span class="text-[10px] mt-1">TikTok</span>
                     </div>
                     <div class="icon-btn" data-group="activity" data-value="📸 Insta" onclick="window.selectToggle(this)">
-                        <i class="fi fi-brands-instagram text-xl mb-1"></i><span class="text-[10px]">Insta</span>
+                        <i class="fi fi-brands-instagram text-2xl mb-1"></i><span class="text-[10px] mt-1">Insta</span>
                     </div>
                     <div class="icon-btn" data-group="activity" data-value="📌 Pinterest" onclick="window.selectToggle(this)">
-                        <i class="fi fi-brands-pinterest text-xl mb-1"></i><span class="text-[10px]">Pinterest</span>
+                        <i class="fi fi-brands-pinterest text-2xl mb-1"></i><span class="text-[10px] mt-1">Pinterest</span>
                     </div>
                     <div class="icon-btn" data-group="activity" data-value="▶️ YouTube" onclick="window.selectToggle(this)">
-                        <i class="fi fi-brands-youtube-circle text-xl mb-1"></i><span class="text-[10px]">YouTube</span>
+                        <i class="fi fi-brands-youtube-circle text-2xl mb-1"></i><span class="text-[10px] mt-1">YouTube</span>
                     </div>
                     <div class="icon-btn" data-group="activity" data-value="🧱 Roblox" onclick="window.selectToggle(this)">
-                        <span class="text-xl mb-1">🧱</span><span class="text-[10px]">Roblox</span>
+                        <img src="https://i.ibb.co/TBqrQCNJ/image.png" class="w-6 h-6 mb-1 object-contain" alt="Roblox"><span class="text-[10px] mt-1">Roblox</span>
                     </div>
                     <div class="icon-btn" data-group="activity" data-value="🎮 Jogando" onclick="window.selectToggle(this)">
-                        <span class="text-xl mb-1">🎮</span><span class="text-[10px]">Jogando</span>
+                        <img src="https://i.ibb.co/TBqrQCNJ/image.png" class="w-6 h-6 mb-1 object-contain" alt="Jogando"><span class="text-[10px] mt-1">Jogando</span>
                     </div>
                     <div class="icon-btn" data-group="activity" data-value="➕ Outro" onclick="window.selectToggle(this)">
-                        <span class="text-xl mb-1">➕</span><span class="text-[10px]">Outro</span>
+                        <img src="https://i.ibb.co/yFXSjZfp/image.png" class="w-6 h-6 mb-1 object-contain" alt="Outro"><span class="text-[10px] mt-1">Outro</span>
                     </div>
                 </div>
                 <input id="activity" type="hidden" value="🚫 Nenhum"/>
@@ -259,10 +259,10 @@
                 <label class="block font-mono text-sm text-[#888888] mb-2">ONDE?</label>
                 <div class="flex gap-4">
                     <div class="toggle-btn active" data-group="location" data-value="home" onclick="window.selectLocation(this)">
-                        <div class="flex items-center justify-center gap-2"><span>🏠 Em Casa</span></div>
+                        <div class="flex items-center justify-center gap-2"><img src="https://i.ibb.co/ymzKpSfr/image.png" class="w-5 h-5 object-contain" alt="Casa"><span>Em Casa</span></div>
                     </div>
                     <div class="toggle-btn" data-group="location" data-value="out" onclick="window.selectLocation(this)">
-                        <div class="flex items-center justify-center gap-2"><span>🚶‍♂️ Vou Sair</span></div>
+                        <div class="flex items-center justify-center gap-2"><img src="https://i.ibb.co/HTGWD85H/image.png" class="w-5 h-5 object-contain" alt="Sair"><span>Vou Sair</span></div>
                     </div>
                 </div>
                 <input id="location" type="hidden" value="home"/>
