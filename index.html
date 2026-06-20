@@ -509,7 +509,7 @@
             article.className = `post-it ${note.tapeColor} post-it-fold p-5`;
             article.onclick = function() { this.classList.toggle('expanded'); };
 
-            let locationIcon = note.locationType === 'home' ? '🏠' : '🚶‍♂️';
+            let locationIcon = note.locationType === 'home' ? '<img src="https://i.ibb.co/ymzKpSfr/image.png" class="w-4 h-4 object-contain inline" alt="Casa">' : '<img src="https://i.ibb.co/HTGWD85H/image.png" class="w-4 h-4 object-contain inline" alt="Sair">';
             
             let extraContent = '';
             if (note.locationType === 'out') {
@@ -524,17 +524,46 @@
 
             let textContent = note.notes ? `<p class="mt-4 font-mono text-[#f0f0f0] whitespace-pre-wrap">${note.notes}</p>` : '';
 
+            let activityHtml = '';
+            if (note.activity !== '🚫 Nenhum') {
+                let actText = note.activity;
+                let actIcon = '';
+                if (actText.includes('TikTok')) {
+                    actIcon = '<i class="fa-brands fa-tiktok"></i>';
+                    actText = actText.replace('📱 ', '');
+                } else if (actText.includes('Insta')) {
+                    actIcon = '<i class="fa-brands fa-instagram"></i>';
+                    actText = actText.replace('📸 ', '');
+                } else if (actText.includes('Pinterest')) {
+                    actIcon = '<i class="fa-brands fa-pinterest-p"></i>';
+                    actText = actText.replace('📌 ', '');
+                } else if (actText.includes('YouTube')) {
+                    actIcon = '<i class="fa-brands fa-youtube"></i>';
+                    actText = actText.replace('▶️ ', '');
+                } else if (actText.includes('Roblox')) {
+                    actIcon = '<img src="https://i.ibb.co/Ng9XWgD7/image.png" class="w-4 h-4 object-contain inline" alt="Roblox">';
+                    actText = actText.replace('🧱 ', '');
+                } else if (actText.includes('Jogando')) {
+                    actIcon = '<i class="fa-brands fa-playstation"></i>';
+                    actText = actText.replace('🎮 ', '');
+                } else if (actText.includes('Outro')) {
+                    actIcon = '<img src="https://i.ibb.co/yFXSjZfp/image.png" class="w-4 h-4 object-contain inline" alt="Outro">';
+                    actText = actText.replace('➕ ', '');
+                }
+                activityHtml = `<span>|</span> <span class="flex items-center gap-1">${actIcon} ${actText}</span>`;
+            }
+
             article.innerHTML = `
                 <header class="flex justify-between items-start">
                     <div class="flex items-center gap-3">
                         <span class="w-10 h-10 flex items-center justify-center bg-surface-variant border-2 border-black text-[#f0f0f0] font-bold text-lg">${note.user}</span>
                         <div class="flex flex-col">
                             <span class="font-mono text-xs text-[#888888]">${note.timeStr || 'Agora'}</span>
-                            <div class="flex gap-2 text-sm mt-1 font-mono">
+                            <div class="flex items-center gap-2 text-sm mt-1 font-mono">
                                 <span>${note.emotion}</span>
                                 <span>|</span>
-                                <span>${locationIcon}</span>
-                                ${note.activity !== '🚫 Nenhum' ? `<span>| ${note.activity}</span>` : ''}
+                                <span class="flex items-center gap-1">${locationIcon}</span>
+                                ${activityHtml}
                             </div>
                         </div>
                     </div>
