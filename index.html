@@ -1,183 +1,310 @@
 <!DOCTYPE html>
 <html class="dark" lang="pt-BR">
 <head>
-    <meta charset="utf-8"/>
-    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <title>Post it - Mural</title>
-    <!-- Google Fonts: Inter & JetBrains Mono -->
-    <link href="https://fonts.googleapis.com" rel="preconnect"/>
-    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet"/>
-    <!-- Material Symbols -->
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <script id="tailwind-config">
-      tailwind.config = {
-        darkMode: "class",
-        theme: {
-          extend: {
-            "colors": {
-                    "tertiary-container": "#8a2be2",
-                    "error": "#ffb4ab",
-                    "surface": "#1c1c1f",
-                    "surface-variant": "#353437",
-                    "on-background": "#f0f0f0",
-                    "on-surface": "#f0f0f0",
-                    "primary": "#ff00ff",
-                    "primary-container": "#ff00ff",
-                    "secondary-container": "#ff1493",
-                    "background": "#0f0f11",
-            },
-            "boxShadow": {
-                'brutal': '6px 6px 0px #000000',
-                'brutal-active': '2px 2px 0px #000000',
-                'brutal-hover': '8px 8px 0px #000000',
-            }
-          }
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Post it - Mural</title>
+<!-- Google Fonts: Fredoka & Kalam for cartoon/hand-drawn look -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Kalam:wght@400;700&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<!-- Font Awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        colors: {
+          "background":          "#0f0f11",
+          "surface":             "#1c1c1f",
+          "surface-variant":     "#353437",
+          "surface-container":   "#202023",
+          "surface-container-high": "#2a2a2d",
+          "on-background":       "#f0f0f0",
+          "on-surface":          "#f0f0f0",
+          "on-surface-variant":  "#aaaaaa",
+          "primary":             "#ff00ff",
+          "primary-container":   "#ff00ff",
+          "secondary":           "#ff1493",
+          "secondary-container": "#ff1493",
+          "tertiary":            "#b56fff",
+          "tertiary-container":  "#8a2be2",
+          "outline":             "#555558",
+          "error":               "#ffb4ab",
+        },
+        boxShadow: {
+          'wobbly':        '4px 5px 0px rgba(0,0,0,0.8), -2px -1px 0px rgba(255,255,255,0.1)',
+          'wobbly-active': '1px 2px 0px rgba(0,0,0,0.8)',
+          'wobbly-hover':  '6px 8px 0px rgba(0,0,0,0.8), -3px -2px 0px rgba(255,255,255,0.1)',
         }
       }
-    </script>
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #0f0f11;
-            color: #f0f0f0;
-        }
+    }
+  }
+</script>
+<style>
+    body {
+        font-family: 'Fredoka', sans-serif;
+        background-color: #0f0f11;
+        color: #f0f0f0;
+        background-image: radial-gradient(#353437 2px, transparent 2px);
+        background-size: 30px 30px;
+    }
 
-        .masonry-grid {
-            column-count: 1;
-            column-gap: 16px;
-        }
-        @media (min-width: 768px) {
-            .masonry-grid { column-count: 2; }
-        }
-        @media (min-width: 1024px) {
-            .masonry-grid { column-count: 3; column-gap: 24px; }
-        }
+    .font-kalam {
+        font-family: 'Kalam', cursive;
+        font-size: 1.1rem;
+    }
 
-        .post-it {
-            break-inside: avoid;
-            margin-bottom: 16px;
-            background-color: #1c1c1f;
-            border: 2px solid #000;
-            box-shadow: 6px 6px 0px #000000;
-            position: relative;
-            transition: all 0.2s ease;
-            cursor: pointer;
-            overflow: hidden;
-        }
-        
-        .post-it .accordion-content {
-            display: none;
-        }
+    /* ── Hand-drawn border shapes (from reference) ── */
+    .hand-drawn-border {
+        border: 3px solid #1a1a1a;
+        border-radius: 255px 15px 225px 15px/15px 225px 15px 255px;
+    }
+    .hand-drawn-border-alt {
+        border: 3px solid #1a1a1a;
+        border-radius: 15px 225px 15px 255px/255px 15px 225px 15px;
+    }
 
-        .post-it.expanded .accordion-content {
-            display: block;
-        }
+    /* Sticker wrapper for icons */
+    .sticker {
+        background-color: white;
+        border: 2px solid #1a1a1a;
+        border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+        padding: 4px;
+    }
 
-        @media (min-width: 1024px) {
-            .post-it {
-                margin-bottom: 24px;
-            }
-        }
+    /* ── Masonry Grid ── */
+    .masonry-grid {
+        column-count: 1;
+        column-gap: 16px;
+    }
+    @media (min-width: 768px)  { .masonry-grid { column-count: 2; } }
+    @media (min-width: 1024px) { .masonry-grid { column-count: 3; column-gap: 24px; } }
 
-        .post-it:hover {
-            transform: translate(-2px, -2px);
-            box-shadow: 8px 8px 0px #000000;
-        }
-        
-        .post-it:active {
-            transform: translate(4px, 4px);
-            box-shadow: 2px 2px 0px #000000;
-        }
+    /* ── Variáveis de tema por cor de fita ── */
+    .tape-magenta { --accent: #ff00ff; --paper-bg: #2a082a; }
+    .tape-pink    { --accent: #ff1493; --paper-bg: #330a1f; }
+    .tape-purple  { --accent: #8a2be2; --paper-bg: #1d0933; }
+    .tape-chumbo  { --accent: #666666; --paper-bg: #1c1c1f; }
 
-        /* Tape Effect */
-        .post-it::before {
-            content: '';
-            position: absolute;
-            top: -10px;
-            left: 50%;
-            transform: translateX(-50%) rotate(-3deg);
-            width: 40px;
-            height: 12px;
-            border: 1px solid #000;
-            z-index: 1;
-        }
+    /* ── Post-it card ── */
+    .post-it {
+        break-inside: avoid;
+        margin-bottom: 16px;
+        /* Fundo tingido pelo tema + textura de papel (pontinhos sutis) */
+        background-color: var(--paper-bg, #202023);
+        background-image:
+            radial-gradient(circle, rgba(255,255,255,0.055) 1px, transparent 1px),
+            radial-gradient(circle at 60% 40%, rgba(255,255,255,0.025) 1px, transparent 1px);
+        background-size: 18px 18px, 11px 11px;
+        border: 3px solid #1a1a1a;
+        border-radius: 2% 4% 3% 5% / 5% 3% 4% 2%;
+        box-shadow: 4px 5px 0px rgba(0,0,0,0.8), -2px -1px 0px rgba(255,255,255,0.1);
+        position: relative;
+        transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+        cursor: pointer;
+        overflow: hidden;
+    }
+    @media (min-width: 1024px) { .post-it { margin-bottom: 24px; } }
 
-        .tape-magenta::before { background-color: rgba(255, 0, 255, 0.85); }
-        .tape-pink::before { background-color: rgba(255, 20, 147, 0.85); transform: translateX(-50%) rotate(2deg); }
-        .tape-purple::before { background-color: rgba(138, 43, 226, 0.85); transform: translateX(-50%) rotate(-2deg); }
-        .tape-chumbo::before { background-color: rgba(79, 79, 79, 0.85); transform: translateX(-50%) rotate(2deg); }
+    .post-it:hover  { transform: translate(-2px, -2px) rotate(1deg);  box-shadow: 6px 8px 0px rgba(0,0,0,0.8), -3px -2px 0px rgba(255,255,255,0.1); }
+    .post-it:active { transform: translate(2px, 2px) rotate(-1deg); box-shadow: 1px 2px 0px rgba(0,0,0,0.8); }
 
-        /* Folded Corner */
-        .post-it-fold {
-            position: relative;
-        }
-        .post-it-fold::after {
-            content: '';
-            position: absolute;
-            bottom: -2px;
-            right: -2px;
-            border-width: 20px 20px 0 0;
-            border-style: solid;
-            border-color: #333 #0f0f11 #0f0f11 #333;
-            border-left-color: transparent;
-            border-bottom-color: transparent;
-            box-shadow: -2px -2px 0px rgba(0,0,0,0.5);
-        }
+    .post-it .accordion-content { display: none; }
+    .post-it.expanded .accordion-content { display: block; }
 
-        .glass-modal {
-            background-color: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-        }
+    /* Tape strip – washi tape grossa e texturizada */
+    .post-it::before {
+        content: '';
+        position: absolute;
+        top: -11px;
+        left: 50%;
+        transform: translateX(-50%) rotate(-3deg);
+        width: 72px;
+        height: 24px;
+        /* Cor sólida do tema + listras semi-transparentes imitando washi tape */
+        background-color: var(--accent, #ff00ff);
+        background-image:
+            repeating-linear-gradient(
+                100deg,
+                transparent,
+                transparent 8px,
+                rgba(255,255,255,0.18) 8px,
+                rgba(255,255,255,0.18) 10px
+            ),
+            repeating-linear-gradient(
+                90deg,
+                rgba(0,0,0,0.08),
+                rgba(0,0,0,0.08) 1px,
+                transparent 1px,
+                transparent 6px
+            );
+        border: 2px solid rgba(0,0,0,0.55);
+        border-radius: 3px 8px 4px 6px / 4px 3px 5px 2px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.25);
+        z-index: 1;
+        opacity: 0.95;
+    }
+    .post-it::after {
+        content: '///';
+        position: absolute;
+        top: -8px;
+        left: 50%;
+        transform: translateX(-50%) rotate(-3deg);
+        color: rgba(0,0,0,0.4);
+        font-size: 11px;
+        font-weight: 900;
+        z-index: 2;
+        letter-spacing: 3px;
+    }
 
-        /* Toggle Button Styles */
-        .toggle-btn {
-            display: flex; align-items: center; justify-content: center; flex: 1; padding: 0.75rem 0; border: 2px solid #000; background-color: #353437; color: #f0f0f0; text-align: center; cursor: pointer; transition: all 0.2s; font-weight: bold; border-radius: 8px;
-        }
-        .toggle-btn.active {
-            background-color: #ff00ff; color: #0f0f11; box-shadow: 4px 4px 0px #000000; transform: translate(-2px, -2px); border-radius: 8px;
-        }
+    /* Ângulos individuais da fita por tema */
+    .tape-pink::before,  .tape-pink::after  { transform: translateX(-50%) rotate(3deg); }
+    .tape-purple::before,.tape-purple::after { transform: translateX(-50%) rotate(-4deg); }
+    .tape-chumbo::before,.tape-chumbo::after { transform: translateX(-50%) rotate(2deg); }
 
-        /* Icon Grid Styles */
-        .icon-btn {
-            display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 0.5rem; border: 2px solid #000; background-color: #353437; color: #f0f0f0; cursor: pointer; transition: all 0.2s; aspect-ratio: 1; border-radius: 8px;
-        }
-        .icon-btn.active {
-            background-color: #ff1493; color: #0f0f11; box-shadow: 4px 4px 0px #000000; transform: translate(-2px, -2px); border-radius: 8px;
-        }
+    /* ── Glass Modal ── */
+    .glass-modal {
+        background-color: rgba(15, 15, 17, 0.82);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+    }
 
-        /* Glow effect for post-it icons to improve visibility */
-        .post-it img, .post-it i {
-            filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.9)) drop-shadow(0 0 5px rgba(255, 255, 255, 0.4));
-        }
-    </style>
+    /* ── Toggle Buttons (user / location) – hand-drawn ── */
+    .toggle-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex: 1;
+        padding: 0.75rem 0;
+        background-color: #353437;
+        color: #f0f0f0;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+        font-weight: 700;
+        font-size: 1rem;
+        border: 3px solid #1a1a1a;
+        border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px;
+    }
+    .toggle-btn.active {
+        background-color: #ff00ff;
+        color: #1a1a1a;
+        box-shadow: 4px 4px 0px rgba(0,0,0,0.8);
+        transform: translate(-2px, -2px);
+    }
+
+    /* ── Icon Grid – emotion: hand-drawn, activity: clean circle ── */
+    .icon-btn {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 0.5rem;
+        background-color: #353437;
+        color: #f0f0f0;
+        cursor: pointer;
+        transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+        aspect-ratio: 1;
+        /* Default: hand-drawn for emotion grid */
+        border: 3px solid #1a1a1a;
+        border-radius: 15px 225px 15px 255px / 255px 15px 225px 15px;
+    }
+    .icon-btn.active {
+        background-color: #ff1493;
+        color: #1a1a1a;
+        box-shadow: 4px 4px 0px rgba(0,0,0,0.8);
+        transform: translate(-2px, -2px);
+    }
+
+    /* Activity icon-btn override → simple circle, no distortion */
+    [data-group="activity"].icon-btn {
+        border-radius: 50%;
+        border: 2px solid #444;
+    }
+    [data-group="activity"].icon-btn.active {
+        border-color: #1a1a1a;
+    }
+
+    /* ── Glow on post-it card icons ── */
+    .post-it img, .post-it i {
+        filter: drop-shadow(0 0 2px rgba(255,255,255,0.9)) drop-shadow(0 0 5px rgba(255,255,255,0.4));
+    }
+
+    /* ── Doodle divider ── */
+    .doodle-line {
+        border-bottom: 2px dashed #555558;
+    }
+
+    /* ── Barra de Energia Brutalista ── */
+    input[type=range] {
+        -webkit-appearance: none;
+        width: 100%;
+        background: transparent;
+    }
+    input[type=range]:focus { outline: none; }
+    input[type=range]::-webkit-slider-runnable-track {
+        width: 100%;
+        height: 16px;
+        cursor: pointer;
+        background: #353437;
+        border: 2px solid #1a1a1a;
+    }
+    input[type=range]::-webkit-slider-thumb {
+        height: 32px;
+        width: 16px;
+        border: 2px solid #1a1a1a;
+        background: #f0f0f0;
+        cursor: pointer;
+        -webkit-appearance: none;
+        margin-top: -10px;
+        box-shadow: 2px 2px 0px #1a1a1a;
+        transition: transform 0.1s;
+    }
+    input[type=range]::-webkit-slider-thumb:active {
+        transform: scale(1.1);
+    }
+    /* Firefox */
+    input[type=range]::-moz-range-track {
+        height: 16px;
+        background: #353437;
+        border: 2px solid #1a1a1a;
+    }
+    input[type=range]::-moz-range-thumb {
+        height: 32px;
+        width: 16px;
+        border: 2px solid #1a1a1a;
+        background: #f0f0f0;
+        border-radius: 0;
+        box-shadow: 2px 2px 0px #1a1a1a;
+        cursor: pointer;
+    }
+</style>
 </head>
-<body class="min-h-screen overflow-x-hidden bg-[#0f0f11]">
+<body class="min-h-screen overflow-x-hidden">
 
-<!-- Top Navigation -->
-<header class="flex items-center justify-between whitespace-nowrap border-b-2 border-black px-4 md:px-10 py-3 bg-[#0f0f11] sticky top-0 z-40">
-    <div class="flex items-center gap-4 text-white">
-        <h2 class="text-white text-2xl font-bold leading-tight tracking-[-0.02em]">Post its</h2>
+<!-- ── Top Navigation ── -->
+<header class="flex items-center justify-between whitespace-nowrap border-b-[3px] border-[#1a1a1a] px-4 md:px-10 py-4 bg-[#0f0f11] sticky top-0 z-40 shadow-wobbly">
+    <div class="flex items-center gap-4 text-[#f0f0f0]">
+        <h2 class="text-[#f0f0f0] text-2xl font-bold leading-tight">Post its</h2>
     </div>
 </header>
 
 <main class="max-w-[1200px] mx-auto px-4 md:px-12 py-8">
-    <div class="flex flex-wrap justify-between items-end gap-3 mb-8">
-        <h1 class="text-[#f0f0f0] text-3xl font-extrabold tracking-tight">Mural</h1>
+    <div class="flex flex-wrap justify-between items-end gap-3 mb-8 doodle-line pb-4">
+        <h1 class="text-[#ff00ff] text-4xl font-extrabold tracking-tight drop-shadow-md">Mural</h1>
     </div>
 
     <!-- O Baú Secreto (Acesso via Hash na URL: #bau) -->
-    <div class="hidden mb-8 p-6 bg-surface-variant border-2 border-black shadow-brutal" id="bau">
-        <h2 class="text-2xl font-bold text-white mb-4">O Baú Secreto 🤫</h2>
+    <div class="hidden mb-8 p-6 bg-[#2a2a2d] hand-drawn-border shadow-wobbly" id="bau">
+        <h2 class="text-2xl font-bold text-[#b56fff] mb-4">O Baú Secreto</h2>
         <div class="flex gap-4">
-            <button class="px-4 py-2 bg-secondary-container text-black font-bold border-2 border-black shadow-brutal hover:translate-x-[-2px] hover:translate-y-[-2px] transition-all" id="btnExport">
+            <button class="px-6 py-2 bg-[#ff1493] text-[#1a1a1a] font-bold hand-drawn-border shadow-wobbly hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-wobbly-hover active:translate-x-[2px] active:translate-y-[2px] active:shadow-wobbly-active transition-all" id="btnExport">
                 Exportar TXT
             </button>
-            <button class="px-4 py-2 bg-error text-black font-bold border-2 border-black shadow-brutal hover:translate-x-[-2px] hover:translate-y-[-2px] transition-all" id="btnClear">
+            <button class="px-6 py-2 bg-[#ffb4ab] text-[#1a1a1a] font-bold hand-drawn-border shadow-wobbly hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-wobbly-hover active:translate-x-[2px] active:translate-y-[2px] active:shadow-wobbly-active transition-all" id="btnClear">
                 Limpar Mural
             </button>
         </div>
@@ -189,23 +316,22 @@
     </div>
 </main>
 
-<!-- Floating Action Button -->
-<button class="fixed bottom-8 right-8 w-16 h-16 bg-primary-container text-[#0f0f11] border-2 border-black shadow-brutal hover:shadow-brutal-hover active:shadow-brutal-active hover:-translate-y-1 transition-all flex items-center justify-center rounded-full z-40" onclick="window.toggleModal()">
-    <span class="material-symbols-outlined text-3xl font-bold" data-icon="add">add</span>
+<!-- ── Floating Action Button ── -->
+<button class="fixed bottom-8 right-8 w-16 h-16 bg-[#ff00ff] text-[#1a1a1a] hand-drawn-border shadow-wobbly hover:shadow-wobbly-hover active:shadow-wobbly-active hover:-translate-y-1 hover:-translate-x-1 transition-all flex items-center justify-center z-40 text-4xl font-bold pb-1" onclick="window.toggleModal()">
+    +
 </button>
 
-<!-- Creation Modal (Glassmorphism) -->
+<!-- ── Creation Modal ── -->
 <div class="hidden fixed inset-0 z-50 glass-modal flex items-center justify-center p-4 overflow-y-auto" id="create-modal">
-    <div class="bg-surface-container border border-white/10 shadow-2xl max-w-lg w-full relative p-6 md:p-8 animate-fade-in my-auto" style="box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);">
-        <button class="absolute top-4 right-4 text-[#888888] hover:text-[#f0f0f0] transition-colors" onclick="window.toggleModal()">
-            <span class="material-symbols-outlined" data-icon="close">close</span>
-        </button>
-        <h2 class="text-2xl font-bold text-[#f0f0f0] mb-6 border-b border-white/10 pb-4">Nova Nota_</h2>
-        
+    <div class="bg-[#1c1c1f] border-[3px] border-[#1a1a1a] shadow-wobbly max-w-lg w-full relative p-6 md:p-8 my-auto" style="border-radius: 2% 4% 3% 5% / 5% 3% 4% 2%;">
+        <button class="absolute top-4 right-4 w-8 h-8 flex items-center justify-center text-[#aaa] hover:text-[#f0f0f0] transition-colors sticker font-bold text-lg" onclick="window.toggleModal()">X</button>
+        <h2 class="text-2xl font-bold text-[#ff00ff] mb-6 border-b-2 border-dashed border-[#555558] pb-4">Nova Nota</h2>
+
         <form class="flex flex-col gap-6" id="notaForm">
+
             <!-- User Toggle -->
             <div>
-                <label class="block font-mono text-sm text-[#888888] mb-2">QUEM É VOCÊ?</label>
+                <label class="block text-xs font-bold tracking-widest text-[#aaaaaa] mb-2">QUEM É VOCÊ?</label>
                 <div class="flex gap-4">
                     <div class="toggle-btn active" data-group="user" data-value="K" onclick="window.selectToggle(this)">[ K ]</div>
                     <div class="toggle-btn" data-group="user" data-value="L" onclick="window.selectToggle(this)">[ L ]</div>
@@ -213,61 +339,77 @@
                 <input id="user" type="hidden" value="K"/>
             </div>
 
-            <!-- Emotion Grid -->
+            <!-- Energia Mental (barra deslizante brutalista) -->
             <div>
-                <label class="block font-mono text-sm text-[#888888] mb-2">HUMOR</label>
-                <div class="grid grid-cols-5 gap-2">
-                    <div class="icon-btn active" data-group="emotion" data-value="😌" onclick="window.selectToggle(this)"><span class="text-2xl">😌</span></div>
-                    <div class="icon-btn" data-group="emotion" data-value="😐" onclick="window.selectToggle(this)"><span class="text-2xl">😐</span></div>
-                    <div class="icon-btn" data-group="emotion" data-value="😔" onclick="window.selectToggle(this)"><span class="text-2xl">😔</span></div>
-                    <div class="icon-btn" data-group="emotion" data-value="😤" onclick="window.selectToggle(this)"><span class="text-2xl">😤</span></div>
-                    <div class="icon-btn" data-group="emotion" data-value="😴" onclick="window.selectToggle(this)"><span class="text-2xl">😴</span></div>
+                <div class="flex justify-between items-end mb-2">
+                    <label class="block text-xs font-bold tracking-widest text-[#aaaaaa]">ENERGIA MENTAL</label>
+                    <span id="energiaDisplay" class="font-kalam text-3xl font-bold text-[#ff00ff]">50%</span>
                 </div>
-                <input id="emotion" type="hidden" value="😌"/>
+                <input type="range" id="emotion" min="0" max="100" value="50" step="5"
+                       oninput="document.getElementById('energiaDisplay').innerText = this.value + '%'"
+                       class="w-full mt-1">
+                <div class="flex justify-between text-[10px] font-bold tracking-wider text-[#aaaaaa] mt-2">
+                    <span>0% — Esgotado 🪫</span>
+                    <span>100% — Cheio ⚡</span>
+                </div>
             </div>
 
-            <!-- Activity Grid -->
+            <!-- Activity Grid (clean circle) -->
             <div>
-                <label class="block font-mono text-sm text-[#888888] mb-2">O QUE ESTÁ FAZENDO?</label>
+                <label class="block text-xs font-bold tracking-widest text-[#aaaaaa] mb-2">O QUE ESTÁ FAZENDO?</label>
                 <div class="grid grid-cols-4 gap-2">
                     <div class="icon-btn active" data-group="activity" data-value="🚫 Nenhum" onclick="window.selectToggle(this)">
-                        <img src="https://i.ibb.co/B2ftxvvf/image.png" class="w-6 h-6 mb-1 object-contain" alt="Nenhum"><span class="text-[10px] mt-1">Nenhum</span>
+                        <img src="https://i.ibb.co/B2ftxvvf/image.png" class="w-6 h-6 mb-1 object-contain" alt="Nenhum">
+                        <span class="text-[10px] font-bold mt-0.5">Nenhum</span>
                     </div>
                     <div class="icon-btn" data-group="activity" data-value="📱 TikTok" onclick="window.selectToggle(this)">
-                        <i class="fa-brands fa-tiktok text-2xl mb-1"></i><span class="text-[10px] mt-1">TikTok</span>
+                        <i class="fa-brands fa-tiktok text-xl mb-1"></i>
+                        <span class="text-[10px] font-bold mt-0.5">TikTok</span>
                     </div>
                     <div class="icon-btn" data-group="activity" data-value="📸 Insta" onclick="window.selectToggle(this)">
-                        <i class="fa-brands fa-instagram text-2xl mb-1"></i><span class="text-[10px] mt-1">Insta</span>
+                        <i class="fa-brands fa-instagram text-xl mb-1"></i>
+                        <span class="text-[10px] font-bold mt-0.5">Insta</span>
                     </div>
                     <div class="icon-btn" data-group="activity" data-value="📌 Pinterest" onclick="window.selectToggle(this)">
-                        <i class="fa-brands fa-pinterest-p text-2xl mb-1"></i><span class="text-[10px] mt-1">Pinterest</span>
+                        <i class="fa-brands fa-pinterest-p text-xl mb-1"></i>
+                        <span class="text-[10px] font-bold mt-0.5">Pinterest</span>
                     </div>
                     <div class="icon-btn" data-group="activity" data-value="▶️ YouTube" onclick="window.selectToggle(this)">
-                        <i class="fa-brands fa-youtube text-2xl mb-1"></i><span class="text-[10px] mt-1">YouTube</span>
+                        <i class="fa-brands fa-youtube text-xl mb-1"></i>
+                        <span class="text-[10px] font-bold mt-0.5">YouTube</span>
                     </div>
                     <div class="icon-btn" data-group="activity" data-value="🧱 Roblox" onclick="window.selectToggle(this)">
-                        <img src="https://i.ibb.co/Ng9XWgD7/image.png" class="w-6 h-6 mb-1 object-contain" alt="Roblox"><span class="text-[10px] mt-1">Roblox</span>
+                        <img src="https://i.ibb.co/Ng9XWgD7/image.png" class="w-6 h-6 mb-1 object-contain" alt="Roblox">
+                        <span class="text-[10px] font-bold mt-0.5">Roblox</span>
                     </div>
                     <div class="icon-btn" data-group="activity" data-value="🎮 Jogando" onclick="window.selectToggle(this)">
-                        <i class="fa-brands fa-playstation text-2xl mb-1"></i><span class="text-[10px] mt-1">Jogando</span>
+                        <i class="fa-brands fa-playstation text-xl mb-1"></i>
+                        <span class="text-[10px] font-bold mt-0.5">Jogando</span>
                     </div>
                     <div class="icon-btn" data-group="activity" data-value="➕ Outro" onclick="window.selectToggle(this)">
-                        <img src="https://i.ibb.co/yFXSjZfp/image.png" class="w-6 h-6 mb-1 object-contain" alt="Outro"><span class="text-[10px] mt-1">Outro</span>
+                        <img src="https://i.ibb.co/yFXSjZfp/image.png" class="w-6 h-6 mb-1 object-contain" alt="Outro">
+                        <span class="text-[10px] font-bold mt-0.5">Outro</span>
                     </div>
                 </div>
                 <input id="activity" type="hidden" value="🚫 Nenhum"/>
-                <input class="hidden w-full mt-3 bg-[#0e0e10] border-2 border-[#39393b] text-[#f0f0f0] px-4 py-3 font-mono focus:outline-none focus:border-[#ff00ff]" id="extra-activity" placeholder="Qual jogo?" type="text"/>
+                <input class="hidden w-full mt-3 bg-[#0e0e10] hand-drawn-border-alt text-[#f0f0f0] px-4 py-3 font-kalam focus:outline-none focus:border-[#ff00ff]" id="extra-activity" placeholder="Qual jogo?" type="text"/>
             </div>
 
             <!-- Location Toggle -->
             <div>
-                <label class="block font-mono text-sm text-[#888888] mb-2">ONDE?</label>
+                <label class="block text-xs font-bold tracking-widest text-[#aaaaaa] mb-2">ONDE?</label>
                 <div class="flex gap-4">
                     <div class="toggle-btn active" data-group="location" data-value="home" onclick="window.selectLocation(this)">
-                        <div class="flex items-center justify-center gap-2"><img src="https://i.ibb.co/ymzKpSfr/image.png" class="w-5 h-5 object-contain" alt="Casa"><span>Em Casa</span></div>
+                        <div class="flex items-center justify-center gap-2">
+                            <img src="https://i.ibb.co/ymzKpSfr/image.png" class="w-5 h-5 object-contain" alt="Casa">
+                            <span>Em Casa</span>
+                        </div>
                     </div>
                     <div class="toggle-btn" data-group="location" data-value="out" onclick="window.selectLocation(this)">
-                        <div class="flex items-center justify-center gap-2"><img src="https://i.ibb.co/HTGWD85H/image.png" class="w-5 h-5 object-contain" alt="Sair"><span>Vou Sair</span></div>
+                        <div class="flex items-center justify-center gap-2">
+                            <img src="https://i.ibb.co/HTGWD85H/image.png" class="w-5 h-5 object-contain" alt="Sair">
+                            <span>Vou Sair</span>
+                        </div>
                     </div>
                 </div>
                 <input id="location" type="hidden" value="home"/>
@@ -276,41 +418,41 @@
             <!-- Conditional Out Fields -->
             <div class="hidden flex-col gap-4" id="out-fields">
                 <div>
-                    <label class="block font-mono text-sm text-[#888888] mb-2">DESTINO</label>
-                    <input class="w-full bg-background border-2 border-surface-variant text-[#f0f0f0] px-4 py-3 focus:outline-none focus:border-tertiary-container" id="destino" placeholder="Para onde?" type="text"/>
+                    <label class="block text-xs font-bold tracking-widest text-[#aaaaaa] mb-2">DESTINO</label>
+                    <input class="w-full bg-[#0e0e10] hand-drawn-border text-[#f0f0f0] px-4 py-3 font-kalam focus:outline-none focus:border-[#8a2be2]" id="destino" placeholder="Para onde?" type="text"/>
                 </div>
                 <div class="grid grid-cols-2 gap-4">
                     <div>
-                        <label class="block font-mono text-sm text-[#888888] mb-2">MOTIVO</label>
-                        <input class="w-full bg-background border-2 border-surface-variant text-[#f0f0f0] px-4 py-3 focus:outline-none focus:border-tertiary-container" id="motivo" placeholder="Fazer o quê?" type="text"/>
+                        <label class="block text-xs font-bold tracking-widest text-[#aaaaaa] mb-2">MOTIVO</label>
+                        <input class="w-full bg-[#0e0e10] hand-drawn-border-alt text-[#f0f0f0] px-4 py-3 font-kalam focus:outline-none focus:border-[#8a2be2]" id="motivo" placeholder="Fazer o quê?" type="text"/>
                     </div>
                     <div>
-                        <label class="block font-mono text-sm text-[#888888] mb-2">VOLTA</label>
-                        <input class="w-full bg-background border-2 border-surface-variant text-[#f0f0f0] px-4 py-3 focus:outline-none focus:border-tertiary-container" id="volta" type="time"/>
+                        <label class="block text-xs font-bold tracking-widest text-[#aaaaaa] mb-2">VOLTA</label>
+                        <input class="w-full bg-[#0e0e10] hand-drawn-border text-[#f0f0f0] px-4 py-3 font-kalam focus:outline-none focus:border-[#8a2be2]" id="volta" type="time"/>
                     </div>
                 </div>
             </div>
 
             <!-- Note Textarea -->
             <div>
-                <label class="block font-mono text-sm text-[#888888] mb-2">NOTA (OPCIONAL)</label>
-                <textarea class="w-full bg-background border-2 border-surface-variant text-[#f0f0f0] px-4 py-3 font-mono focus:outline-none focus:border-primary-container resize-none" id="notaText" placeholder="Mais detalhes..." rows="3"></textarea>
+                <label class="block text-xs font-bold tracking-widest text-[#aaaaaa] mb-2">NOTA (OPCIONAL)</label>
+                <textarea class="w-full bg-[#0e0e10] hand-drawn-border-alt text-[#f0f0f0] px-4 py-3 font-kalam focus:outline-none focus:border-[#ff00ff] resize-none" id="notaText" placeholder="Mais detalhes..." rows="3"></textarea>
             </div>
 
             <!-- Tape Color -->
             <div>
-                <label class="block font-mono text-sm text-[#888888] mb-2">COR DA FITA</label>
+                <label class="block text-xs font-bold tracking-widest text-[#aaaaaa] mb-2">COR DA FITA</label>
                 <div class="flex gap-4 mt-2">
-                    <div class="w-10 h-10 rounded-full cursor-pointer border-4 border-white active transition-all" data-group="tapeColor" data-value="tape-magenta" onclick="window.selectToggle(this)" style="background-color: #ff00ff;"></div>
-                    <div class="w-10 h-10 rounded-full cursor-pointer border-4 border-transparent transition-all" data-group="tapeColor" data-value="tape-pink" onclick="window.selectToggle(this)" style="background-color: #ff1493;"></div>
-                    <div class="w-10 h-10 rounded-full cursor-pointer border-4 border-transparent transition-all" data-group="tapeColor" data-value="tape-purple" onclick="window.selectToggle(this)" style="background-color: #8a2be2;"></div>
-                    <div class="w-10 h-10 rounded-full cursor-pointer border-4 border-transparent transition-all" data-group="tapeColor" data-value="tape-chumbo" onclick="window.selectToggle(this)" style="background-color: #4f4f4f;"></div>
+                    <div class="w-11 h-11 cursor-pointer border-4 border-white active transition-all sticker" data-group="tapeColor" data-value="tape-magenta" onclick="window.selectToggle(this)" style="background-color:#ff00ff;"></div>
+                    <div class="w-11 h-11 cursor-pointer border-4 border-transparent transition-all sticker" data-group="tapeColor" data-value="tape-pink" onclick="window.selectToggle(this)" style="background-color:#ff1493;"></div>
+                    <div class="w-11 h-11 cursor-pointer border-4 border-transparent transition-all sticker" data-group="tapeColor" data-value="tape-purple" onclick="window.selectToggle(this)" style="background-color:#8a2be2;"></div>
+                    <div class="w-11 h-11 cursor-pointer border-4 border-transparent transition-all sticker" data-group="tapeColor" data-value="tape-chumbo" onclick="window.selectToggle(this)" style="background-color:#4f4f4f;"></div>
                     <input id="tapeColor" type="hidden" value="tape-magenta"/>
                 </div>
             </div>
 
-            <button class="mt-2 w-full bg-primary-container text-[#0f0f11] font-bold text-lg py-4 border-2 border-black shadow-brutal hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-brutal-hover active:translate-x-[2px] active:translate-y-[2px] active:shadow-brutal-active transition-all" id="btnSave" type="button">
-                Pregar no Mural
+            <button class="mt-2 w-full bg-[#ff00ff] text-[#1a1a1a] font-bold text-lg py-4 hand-drawn-border shadow-wobbly hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-wobbly-hover active:translate-x-[2px] active:translate-y-[2px] active:shadow-wobbly-active transition-all" id="btnSave" type="button">
+                Pregar no Mural 
             </button>
         </form>
     </div>
@@ -326,7 +468,7 @@
     window.selectToggle = function(element) {
         const group = element.dataset.group;
         const value = element.dataset.value;
-        
+
         document.querySelectorAll(`[data-group="${group}"]`).forEach(el => {
             el.classList.remove('active');
             if (group === 'tapeColor') {
@@ -334,15 +476,15 @@
                 el.classList.add('border-transparent');
             }
         });
-        
+
         element.classList.add('active');
         if (group === 'tapeColor') {
             element.classList.add('border-white');
             element.classList.remove('border-transparent');
         }
-        
+
         document.getElementById(group).value = value;
-        
+
         if (group === 'activity') {
             const extraInput = document.getElementById('extra-activity');
             if (value === '🎮 Jogando' || value === '➕ Outro') {
@@ -360,7 +502,6 @@
         window.selectToggle(element);
         const value = element.dataset.value;
         const outFields = document.getElementById('out-fields');
-        
         if (value === 'out') {
             outFields.classList.remove('hidden');
             outFields.classList.add('flex');
@@ -389,37 +530,32 @@
     const db = getFirestore(app);
     const collectionRef = collection(db, "registros_tempo");
 
-    // Save Functionality
+    // ── Save ──
     document.getElementById('btnSave').addEventListener('click', async () => {
         const btnSave = document.getElementById('btnSave');
         btnSave.disabled = true;
         btnSave.textContent = "Salvando...";
 
-        const user = document.getElementById('user').value;
-        const emotion = document.getElementById('emotion').value;
-        let activity = document.getElementById('activity').value;
+        const user        = document.getElementById('user').value;
+        const emotion     = document.getElementById('emotion').value;
+        let   activity    = document.getElementById('activity').value;
         const extraActivity = document.getElementById('extra-activity').value;
-        const locationType = document.getElementById('location').value;
-        const tapeColor = document.getElementById('tapeColor').value;
-        const notes = document.getElementById('notaText').value;
-        
+        const locationType  = document.getElementById('location').value;
+        const tapeColor   = document.getElementById('tapeColor').value;
+        const notes       = document.getElementById('notaText').value;
+
         if ((activity === '🎮 Jogando' || activity === '➕ Outro') && extraActivity.trim() !== '') {
             activity += `: ${extraActivity.trim()}`;
         }
 
         const now = new Date();
         const docData = {
-            user,
-            emotion,
-            activity,
-            locationType,
-            tapeColor,
-            notes,
+            user, emotion, activity, locationType, tapeColor, notes,
             destino: locationType === 'out' ? document.getElementById('destino').value : null,
-            motivo: locationType === 'out' ? document.getElementById('motivo').value : null,
-            volta: locationType === 'out' ? document.getElementById('volta').value : null,
-            timeStr: now.toTimeString().substring(0,5),
-            dateStr: now.toISOString().substring(0,10),
+            motivo:  locationType === 'out' ? document.getElementById('motivo').value  : null,
+            volta:   locationType === 'out' ? document.getElementById('volta').value   : null,
+            timeStr: now.toTimeString().substring(0, 5),
+            dateStr: now.toISOString().substring(0, 10),
             timestamp: serverTimestamp()
         };
 
@@ -435,24 +571,20 @@
             alert("Erro ao salvar: " + e.message);
         } finally {
             btnSave.disabled = false;
-            btnSave.textContent = "Pregar no Mural";
+            btnSave.textContent = "Pregar no Mural 📌";
         }
     });
 
-    // Vault Logic (Hash routing)
+    // ── Vault / Hash routing ──
     const vaultSection = document.getElementById('bau');
     window.addEventListener('hashchange', checkHash);
-    
     function checkHash() {
-        if (window.location.hash === '#bau') {
-            vaultSection.classList.remove('hidden');
-        } else {
-            vaultSection.classList.add('hidden');
-        }
+        if (window.location.hash === '#bau') vaultSection.classList.remove('hidden');
+        else vaultSection.classList.add('hidden');
     }
-    checkHash(); // Check on load
+    checkHash();
 
-    // Export Functionality
+    // ── Export ──
     const q = query(collectionRef, orderBy("timestamp", "desc"));
     document.getElementById('btnExport').addEventListener('click', async () => {
         const snap = await getDocs(q);
@@ -463,40 +595,28 @@
             txt += `Usuário: ${note.user} | Emoção: ${note.emotion} | Tema: ${note.tapeColor}\n`;
             txt += `Atividade: ${note.activity}\n`;
             txt += `Localização: ${note.locationType === 'home' ? 'EM CASA' : 'VOU SAIR'}\n`;
-            if (note.locationType === 'out') {
-                txt += `   Destino: ${note.destino} | Motivo: ${note.motivo} | Volta: ${note.volta}\n`;
-            }
-            if (note.notes) {
-                txt += `Notas:\n${note.notes}\n`;
-            }
+            if (note.locationType === 'out') txt += `   Destino: ${note.destino} | Motivo: ${note.motivo} | Volta: ${note.volta}\n`;
+            if (note.notes) txt += `Notas:\n${note.notes}\n`;
             txt += `------------------------------\n`;
         });
-        
         const blob = new Blob([txt], { type: "text/plain" });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
+        const url  = URL.createObjectURL(blob);
+        const a    = document.createElement('a');
         a.href = url;
-        a.download = `registros_tempo_${new Date().toISOString().substring(0,10)}.txt`;
+        a.download = `registros_tempo_${new Date().toISOString().substring(0, 10)}.txt`;
         a.click();
         URL.revokeObjectURL(url);
     });
 
-    // Clear Mural Functionality
+    // ── Clear ──
     document.getElementById('btnClear').addEventListener('click', async () => {
         if (confirm("TEM CERTEZA? Isso vai apagar todos os post-its do mural atual.")) {
             if (confirm("Última chance! Confirma a exclusão de tudo?")) {
                 const btnClear = document.getElementById('btnClear');
                 btnClear.textContent = "Apagando...";
                 btnClear.disabled = true;
-
                 const snap = await getDocs(collectionRef);
-                const promises = [];
-                snap.forEach((d) => {
-                    promises.push(deleteDoc(doc(db, "registros_tempo", d.id)));
-                });
-
-                await Promise.all(promises);
-                
+                await Promise.all(snap.docs.map(d => deleteDoc(doc(db, "registros_tempo", d.id))));
                 btnClear.textContent = "Limpar Mural";
                 btnClear.disabled = false;
                 alert("Mural limpo com sucesso!");
@@ -504,69 +624,62 @@
         }
     });
 
-    // Realtime Feed Rendering
+    // ── Realtime Feed Rendering ──
     const feed = document.getElementById('feed');
     onSnapshot(q, (snapshot) => {
         feed.innerHTML = '';
         snapshot.forEach((docSnap) => {
-            const note = docSnap.data();
+            const note    = docSnap.data();
             const article = document.createElement('article');
-            article.className = `post-it ${note.tapeColor} post-it-fold p-5`;
+            article.className = `post-it ${note.tapeColor} p-5`;
             article.onclick = function() { this.classList.toggle('expanded'); };
 
-            let locationIcon = note.locationType === 'home' ? '<img src="https://i.ibb.co/ymzKpSfr/image.png" class="w-4 h-4 object-contain inline" alt="Casa">' : '<img src="https://i.ibb.co/HTGWD85H/image.png" class="w-4 h-4 object-contain inline" alt="Sair">';
-            
+            const locationIcon = note.locationType === 'home'
+                ? '<img src="https://i.ibb.co/ymzKpSfr/image.png" class="w-4 h-4 object-contain inline" alt="Casa">'
+                : '<img src="https://i.ibb.co/HTGWD85H/image.png" class="w-4 h-4 object-contain inline" alt="Sair">';
+
             let extraContent = '';
             if (note.locationType === 'out') {
                 extraContent = `
-                    <div class="mt-4 p-3 border-2 border-dashed border-white/20 bg-black/20 text-sm font-mono text-white">
+                    <div class="mt-4 p-3 hand-drawn-border-alt bg-black/20 text-sm font-kalam text-[#f0f0f0]">
                         <p><strong>📍 P/ Onde:</strong> ${note.destino || '---'}</p>
-                        <p><strong>🎯 Motivo:</strong> ${note.motivo || '---'}</p>
-                        <p><strong>⏳ Volta:</strong> ${note.volta || '---'}</p>
-                    </div>
-                `;
+                        <p><strong>🎯 Motivo:</strong>  ${note.motivo  || '---'}</p>
+                        <p><strong>⏳ Volta:</strong>   ${note.volta   || '---'}</p>
+                    </div>`;
             }
 
-            let textContent = note.notes ? `<p class="mt-4 font-mono text-[#f0f0f0] whitespace-pre-wrap">${note.notes}</p>` : '';
+            const textContent = note.notes
+                ? `<p class="mt-4 font-kalam text-[#f0f0f0] whitespace-pre-wrap text-base leading-relaxed">${note.notes}</p>`
+                : '';
 
             let activityHtml = '';
             if (note.activity !== '🚫 Nenhum') {
                 let actText = note.activity;
                 let actIcon = '';
-                if (actText.includes('TikTok')) {
-                    actIcon = '<i class="fa-brands fa-tiktok"></i>';
-                    actText = actText.replace('📱 ', '');
-                } else if (actText.includes('Insta')) {
-                    actIcon = '<i class="fa-brands fa-instagram"></i>';
-                    actText = actText.replace('📸 ', '');
-                } else if (actText.includes('Pinterest')) {
-                    actIcon = '<i class="fa-brands fa-pinterest-p"></i>';
-                    actText = actText.replace('📌 ', '');
-                } else if (actText.includes('YouTube')) {
-                    actIcon = '<i class="fa-brands fa-youtube"></i>';
-                    actText = actText.replace('▶️ ', '');
-                } else if (actText.includes('Roblox')) {
-                    actIcon = '<img src="https://i.ibb.co/Ng9XWgD7/image.png" class="w-4 h-4 object-contain inline" alt="Roblox">';
-                    actText = actText.replace('🧱 ', '');
-                } else if (actText.includes('Jogando')) {
-                    actIcon = '<i class="fa-brands fa-playstation"></i>';
-                    actText = actText.replace('🎮 ', '');
-                } else if (actText.includes('Outro')) {
-                    actIcon = '<img src="https://i.ibb.co/yFXSjZfp/image.png" class="w-4 h-4 object-contain inline" alt="Outro">';
-                    actText = actText.replace('➕ ', '');
-                }
-                activityHtml = `<span>|</span> <span class="flex items-center gap-1">${actIcon} ${actText}</span>`;
+                if      (actText.includes('TikTok'))   { actIcon = '<i class="fa-brands fa-tiktok"></i>';       actText = actText.replace('📱 ', ''); }
+                else if (actText.includes('Insta'))     { actIcon = '<i class="fa-brands fa-instagram"></i>';    actText = actText.replace('📸 ', ''); }
+                else if (actText.includes('Pinterest')) { actIcon = '<i class="fa-brands fa-pinterest-p"></i>';  actText = actText.replace('📌 ', ''); }
+                else if (actText.includes('YouTube'))   { actIcon = '<i class="fa-brands fa-youtube"></i>';      actText = actText.replace('▶️ ', ''); }
+                else if (actText.includes('Roblox'))    { actIcon = '<img src="https://i.ibb.co/Ng9XWgD7/image.png" class="w-4 h-4 object-contain inline" alt="Roblox">'; actText = actText.replace('🧱 ', ''); }
+                else if (actText.includes('Jogando'))   { actIcon = '<i class="fa-brands fa-playstation"></i>';  actText = actText.replace('🎮 ', ''); }
+                else if (actText.includes('Outro'))     { actIcon = '<img src="https://i.ibb.co/yFXSjZfp/image.png" class="w-4 h-4 object-contain inline" alt="Outro">'; actText = actText.replace('➕ ', ''); }
+                activityHtml = `<span class="text-[#aaa]">|</span><span class="flex items-center gap-1">${actIcon} ${actText}</span>`;
             }
 
             article.innerHTML = `
                 <header class="flex justify-between items-start">
                     <div class="flex items-center gap-3">
-                        <span class="w-10 h-10 flex items-center justify-center bg-surface-variant border-2 border-black text-[#f0f0f0] font-bold text-lg">${note.user}</span>
+                        <span class="sticker w-10 h-10 flex items-center justify-center text-[#1a1a1a] font-bold text-xl">${note.user}</span>
                         <div class="flex flex-col">
-                            <span class="font-mono text-xs text-[#888888]">${note.timeStr || 'Agora'}</span>
-                            <div class="flex items-center gap-2 text-sm mt-1 font-mono">
-                                <span>${note.emotion}</span>
-                                <span>|</span>
+                            <span class="text-xs font-bold tracking-wider text-[#aaaaaa]">${note.timeStr || 'Agora'}</span>
+                            <div class="flex items-center gap-2 text-sm mt-1 font-bold text-[#f0f0f0]">
+                                <span class="flex items-center gap-1.5" title="Energia: ${note.emotion}%">
+                                    <span class="font-kalam text-xs font-bold" style="color:${parseInt(note.emotion||50)<=25?'#ff4444':parseInt(note.emotion||50)<=60?'#ffaa00':'#ff00ff'}">${note.emotion||50}%</span>
+                                    <span class="inline-block w-16 h-3 border-2 border-[#555] bg-[#1a1a1a] align-middle overflow-hidden" style="border-radius:2px;">
+                                        <span class="block h-full" style="width:${note.emotion||50}%;background-color:${parseInt(note.emotion||50)<=25?'#ff4444':parseInt(note.emotion||50)<=60?'#ffaa00':'#ff00ff'};"></span>
+                                    </span>
+                                </span>
+                                <span class="text-[#aaa]">|</span>
                                 <span class="flex items-center gap-1">${locationIcon}</span>
                                 ${activityHtml}
                             </div>
@@ -576,8 +689,7 @@
                 <div class="accordion-content">
                     ${extraContent}
                     ${textContent}
-                </div>
-            `;
+                </div>`;
             feed.appendChild(article);
         });
     });
